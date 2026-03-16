@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Anchors for AI Systems That Actually Work · 2026 Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --amber: #B8720A; --amber-l: #FEF3DC; --amber-d: #7A4A05;
+  --teal: #0A6B50; --teal-l: #E0F5EE; --teal-d: #054033;
+  --purple: #4A42AA; --purple-l: #EDECFD; --purple-d: #312B7A;
+  --coral: #8F3818; --coral-l: #FAE9E2; --coral-d: #5E2510;
+  --blue: #1455A0; --blue-l: #E4EFF9; --blue-d: #0A3A70;
+  --red: #9A2828; --red-l: #FBEBEB;
+  --ink: #1A1A17; --ink-2: #3A3A35; --ink-3: #6A6A62;
+  --paper: #FAFAF7; --paper-2: #F4F3EE; --paper-3: #ECEAE2;
+  --border: rgba(26,26,23,0.10);
+  --border-2: rgba(26,26,23,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --sans: 'Source Sans 3', system-ui, sans-serif;
+  --mono: 'DM Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PROGRESS BAR ── */
+#progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--amber); width: 0%; z-index: 100; transition: width .1s linear; }
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 90;
+  background: rgba(250,250,247,.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: .65rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; color: var(--ink-3);
+}
+.nav-title { font-family: var(--serif); font-size: .9rem; font-style: italic; color: var(--ink-2); font-weight: 400; }
+.nav-links { display: flex; gap: 1.4rem; }
+.nav-links a { color: var(--ink-3); text-decoration: none; transition: color .15s; }
+.nav-links a:hover { color: var(--ink); }
+
+/* ── HERO ── */
+.hero {
+  max-width: 720px; margin: 0 auto;
+  padding: 5rem 1.5rem 3rem;
+}
+.hero-eyebrow {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: .6rem;
+}
+.hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--amber); }
+h1 {
+  font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 600;
+  line-height: 1.15; color: var(--ink); margin-bottom: 1.2rem;
+}
+h1 em { font-style: italic; color: var(--amber); }
+.hero-deck {
+  font-family: var(--sans); font-size: 1.1rem; font-weight: 300; line-height: 1.75;
+  color: var(--ink-2); border-left: 3px solid var(--amber); padding-left: 1rem;
+  margin-bottom: 2rem;
+}
+.meta {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .05em; color: var(--ink-3);
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+}
+
+/* ── LAYOUT ── */
+.article-body { max-width: 720px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+/* ── PROSE ── */
+p { margin-bottom: 1.4rem; font-size: 1rem; }
+p + p { margin-top: 0; }
+
+h2 {
+  font-family: var(--serif); font-size: 1.7rem; font-weight: 600;
+  color: var(--ink); margin: 3.5rem 0 1rem; line-height: 1.25;
+}
+h2 em { font-style: italic; color: var(--amber); }
+
+h3 {
+  font-family: var(--sans); font-size: 1rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-2); margin: 2.5rem 0 .7rem;
+}
+
+strong { font-weight: 600; color: var(--ink); }
+
+a { color: var(--blue); text-decoration: underline; text-decoration-color: rgba(20,85,160,.3); text-underline-offset: 2px; }
+a:hover { text-decoration-color: var(--blue); }
+
+/* ── SECTION DIVIDER ── */
+.section-break {
+  display: flex; align-items: center; gap: 1rem; margin: 3rem 0;
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+}
+.section-break::before, .section-break::after { content: ''; flex: 1; height: 1px; background: var(--border-2); }
+
+/* ── CALLOUT / PULLQUOTE ── */
+.pullquote {
+  border-left: 4px solid var(--amber);
+  padding: 1rem 1.4rem;
+  margin: 2rem 0;
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--ink-2); line-height: 1.65;
+  background: var(--amber-l); border-radius: 0 8px 8px 0;
+}
+
+.callout {
+  background: var(--paper-2); border: 1px solid var(--border-2);
+  border-radius: 10px; padding: 1.2rem 1.4rem; margin: 2rem 0;
+  font-family: var(--sans); font-size: .9rem; line-height: 1.65; color: var(--ink-2);
+}
+.callout-label {
+  font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: .5rem;
+}
+
+/* ── TREND TABLE ── */
+.trend-table { border: 1px solid var(--border-2); border-radius: 10px; overflow: hidden; margin: 2rem 0; }
+.trend-row {
+  display: grid; grid-template-columns: 1fr 32px 1fr;
+  align-items: start; gap: .5rem;
+  padding: .9rem 1rem; border-bottom: 1px solid var(--border);
+  font-family: var(--sans); font-size: .85rem; line-height: 1.55;
+}
+.trend-row:last-child { border-bottom: none; }
+.trend-row:nth-child(even) { background: var(--paper-2); }
+.trend-era { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; color: var(--ink-3); margin-bottom: .2rem; }
+.trend-hype strong { color: var(--ink); font-weight: 600; }
+.trend-reality { color: var(--ink-2); }
+.trend-arrow { color: var(--ink-3); padding-top: 1.2rem; text-align: center; font-size: 1rem; }
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: .58rem; letter-spacing: .06em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 99px; margin-bottom: 3px;
+}
+.tag-red { background: var(--red-l); color: var(--red); }
+.tag-amber { background: var(--amber-l); color: var(--amber-d); }
+.tag-teal { background: var(--teal-l); color: var(--teal-d); }
+
+/* ── ANCHOR SECTIONS ── */
+.anchor-section { margin: 4rem 0; }
+.anchor-header {
+  display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.2rem;
+}
+.anchor-num {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: .8rem; font-weight: 500; color: white;
+}
+.anchor-meta { flex: 1; }
+.anchor-label { font-family: var(--mono); font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: .2rem; }
+.anchor-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; line-height: 1.25; color: var(--ink); }
+
+/* ── FIGURE / DIAGRAM ── */
+.figure { margin: 2.5rem 0; }
+.figure-inner {
+  background: var(--paper-2); border: 1px solid var(--border-2);
+  border-radius: 12px; padding: 1.5rem; overflow-x: auto;
+}
+.figure-caption {
+  font-family: var(--sans); font-size: .78rem; color: var(--ink-3);
+  margin-top: .6rem; text-align: center; font-style: italic;
+}
+
+/* ── SVG DIAGRAMS ── */
+.diag-text { font-family: 'Source Sans 3', sans-serif; font-size: 13px; fill: var(--ink); }
+.diag-muted { font-family: 'Source Sans 3', sans-serif; font-size: 11px; fill: var(--ink-3); }
+.diag-mono { font-family: 'DM Mono', monospace; font-size: 10px; fill: var(--ink-3); }
+.diag-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .06em; fill: var(--ink-3); }
+
+/* ── CODE BLOCK ── */
+.code-block {
+  background: #1A1A17; color: #E8E4D8;
+  font-family: var(--mono); font-size: .75rem; line-height: 1.7;
+  border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1.5rem 0;
+  overflow-x: auto;
+}
+.code-block .kw { color: #89BFFF; }
+.code-block .str { color: #A8D8A0; }
+.code-block .cm { color: #6A8A6A; font-style: italic; }
+.code-block .fn { color: #FFB86C; }
+.code-block .ty { color: #BD93F9; }
+
+/* ── STATS ROW ── */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: .75rem; margin: 1.5rem 0; }
+.stat-card {
+  background: var(--paper-2); border: 1px solid var(--border-2);
+  border-radius: 8px; padding: .85rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: var(--serif); font-size: 1.8rem; font-weight: 600;
+  line-height: 1.1; margin-bottom: .2rem;
+}
+.stat-label { font-family: var(--sans); font-size: .75rem; color: var(--ink-3); line-height: 1.4; }
+
+/* ── KIRO BLOCK ── */
+.kiro-block {
+  background: #180E08; border: 1px solid #5A2510;
+  border-radius: 12px; padding: 1.8rem; margin: 2.5rem 0; color: #F0C4B0;
+}
+.kiro-eyebrow {
+  font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+  color: #C06040; margin-bottom: .8rem; display: flex; align-items: center; gap: .5rem;
+}
+.kiro-dot { width: 6px; height: 6px; border-radius: 50%; background: #E04A3A; animation: kpulse 2s ease-in-out infinite; flex-shrink: 0; }
+@keyframes kpulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.kiro-block h3 { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; color: #FAE8E0; text-transform: none; letter-spacing: 0; margin: 0 0 .8rem; }
+.kiro-block p { font-family: var(--sans); font-size: .9rem; line-height: 1.7; color: #D8B0A0; }
+.kiro-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: .6rem; margin: 1.2rem 0; }
+.kiro-stat { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 7px; padding: .65rem .8rem; text-align: center; }
+.kiro-stat-v { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; color: #F09090; line-height: 1; margin-bottom: .2rem; }
+.kiro-stat-l { font-family: var(--sans); font-size: .7rem; color: #9A7060; }
+.kiro-lesson { background: rgba(255,255,255,.04); border-left: 3px solid #C04030; padding: .8rem 1rem; border-radius: 0 6px 6px 0; margin-top: 1rem; font-family: var(--sans); font-size: .88rem; color: #F0E0D8; line-height: 1.65; }
+
+/* ── USE CASE GRID ── */
+.usecase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin: 1.5rem 0; }
+.usecase-card { background: var(--paper-2); border: 1px solid var(--border); border-radius: 8px; padding: .75rem .9rem; }
+.usecase-domain { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .25rem; }
+.usecase-text { font-family: var(--sans); font-size: .82rem; color: var(--ink-2); line-height: 1.5; }
+
+/* ── EXAMPLE PRODUCTS ── */
+.product-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .7rem; margin: 1.5rem 0;
+}
+.product-card {
+  border: 1px solid var(--border-2); border-radius: 9px; padding: .85rem 1rem;
+  position: relative; overflow: hidden;
+}
+.product-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.product-name { font-family: var(--sans); font-size: .9rem; font-weight: 600; color: var(--ink); margin-bottom: .2rem; }
+.product-domain { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .4rem; }
+.product-text { font-family: var(--sans); font-size: .78rem; color: var(--ink-2); line-height: 1.5; }
+.product-anchor { font-family: var(--mono); font-size: .6rem; letter-spacing: .06em; margin-top: .5rem; }
+
+/* ── NEMOCLAW / ZEROCLAW ── */
+.ecosystem-card {
+  border: 1px solid var(--border-2); border-radius: 12px; overflow: hidden; margin: 1.5rem 0;
+}
+.ecosystem-header {
+  padding: .9rem 1.2rem; display: flex; align-items: center; gap: .8rem;
+  border-bottom: 1px solid var(--border);
+}
+.ecosystem-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ecosystem-name { font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--ink); }
+.ecosystem-tag { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; margin-left: auto; }
+.ecosystem-body { padding: 1rem 1.2rem; font-family: var(--sans); font-size: .88rem; color: var(--ink-2); line-height: 1.65; }
+.ecosystem-props { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .5rem; margin-top: .9rem; }
+.ecosystem-prop { background: var(--paper-2); border-radius: 6px; padding: .5rem .7rem; }
+.prop-val { font-family: var(--mono); font-size: .78rem; font-weight: 500; color: var(--ink); margin-bottom: .1rem; }
+.prop-label { font-family: var(--sans); font-size: .7rem; color: var(--ink-3); }
+
+/* ── REFERENCES ── */
+.references {
+  margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-2);
+  font-family: var(--sans); font-size: .78rem; color: var(--ink-3); line-height: 1.6;
+}
+.references h3 { font-size: .75rem; margin-bottom: 1rem; }
+.ref-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.ref-list li { padding-left: 1.5rem; position: relative; }
+.ref-list li::before { content: '[' attr(data-n) ']'; position: absolute; left: 0; color: var(--amber); font-family: var(--mono); font-size: .65rem; }
+
+/* ── FOOTNOTE REF ── */
+sup.ref { font-family: var(--mono); font-size: .6rem; color: var(--amber); cursor: default; }
+
+/* ── PRINCIPLE CLOSER ── */
+.principle-block {
+  background: var(--paper-3); border-radius: 14px;
+  padding: 2rem 2rem; margin: 4rem 0; text-align: center;
+}
+.principle-block p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--ink-2); line-height: 1.8; margin: 0;
+}
+.principle-block em { color: var(--amber); font-style: normal; font-weight: 600; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .trend-row { grid-template-columns: 1fr; } .trend-arrow { display: none; }
+  .usecase-grid, .product-row, .stats-row, .kiro-stats { grid-template-columns: 1fr; }
+  h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <span class="nav-title">AI Systems Field Guide · 2026</span>
+  <div class="nav-links">
+    <a href="#intro">Intro</a>
+    <a href="#anchors">Anchors</a>
+    <a href="#security">Security</a>
+    <a href="#nemoclaw">NemoClaw</a>
+    <a href="#zeroclaw">ZeroClaw</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">2026 · AI Systems Field Guide</div>
+  <h1>I can't keep up with AI.<br><em>Neither can anyone.</em></h1>
+  <p class="hero-deck">Nine months ago, MCP was the must-adopt framework. Today it is a documented security liability. Here is what stays true when everything else changes — five structural anchors for high-functioning AI, data, and reactive systems.</p>
+  <div class="meta">
+    <span>March 2026</span>
+    <span>~18 min read</span>
+    <span>Technical + Business audiences</span>
+  </div>
+</div>
+
+<div class="article-body" id="intro">
+
+<!-- ══════════════════ PART 1: INTRO ══════════════════ -->
+
+<p>There is a specific kind of exhaustion that comes from following the AI space closely. It is not the exhaustion of too much information — it is the exhaustion of investing in things that turn out to matter less than advertised, while the things that genuinely matter get buried under the noise of the next announcement.</p>
+
+<p>The feeling is rational. In the past eighteen months, entire categories of "essential" AI tooling have gone through the full arc: breathless launch, mass adoption, real-world reckoning, quiet retreat. The people who feel most burned are not the ones who ignored AI — they are the ones who paid the closest attention.</p>
+
+<div class="pullquote">
+The practitioners who build systems that last are not the ones who chase the fastest-moving thing. They are the ones who recognized the underlying principle each trend was trying to solve — and built for that instead.
+</div>
+
+<p>This piece is an attempt to cut through that. Not by dismissing recent progress — which is genuinely extraordinary — but by identifying the structural properties that differentiate systems that work in production from systems that looked good in demos.</p>
+
+<h2>How trends actually age</h2>
+
+<p>Every major AI trend of the past three years has followed the same arc. It is worth charting explicitly, because the arc itself is the lesson.</p>
+
+<div class="trend-table">
+  <div class="trend-row">
+    <div class="trend-hype">
+      <div class="trend-era">Mid-2024</div>
+      <span class="tag tag-amber">Hype</span><br>
+      <strong>MCP — Model Context Protocol</strong><br>
+      The universal adapter for connecting LLMs to any tool or data source. Every team scrambled to build MCP servers.
+    </div>
+    <div class="trend-arrow">→</div>
+    <div class="trend-reality">
+      <div class="trend-era">2025–2026</div>
+      <span class="tag tag-red">Security liability</span><br>
+      Token bloat from over-permissioned tool descriptions. <strong>CVE-2025-6514</strong> — RCE via OS Command Injection, CVSS 9.6 Critical: remotely exploitable, low complexity, total loss of confidentiality, integrity, and availability. Affected <code style="font-family:var(--mono);font-size:.8em;background:var(--paper-3);padding:1px 4px;border-radius:3px">mcp-remote</code> versions 0.0.5–0.1.15, with 437K+ downloads.<sup class="ref">[1]</sup> Patched in <code style="font-family:var(--mono);font-size:.8em;background:var(--paper-3);padding:1px 4px;border-radius:3px">mcp-remote</code> v0.1.16 (July 2025). An MCP stdio server inherits the user's full access — files, credentials, commands — with no sandbox. 75% of servers built with no security review.
+    </div>
+  </div>
+  <div class="trend-row">
+    <div class="trend-hype">
+      <div class="trend-era">2023–2025</div>
+      <span class="tag tag-teal">Promising foundation</span><br>
+      <strong>Kiro — formal proof from spec to implementation</strong><br>
+      Kiro's founding engineers set a serious architectural foundation: formal verification of specifications through to implementation — a meaningful step toward provably correct agentic behavior in production.
+    </div>
+    <div class="trend-arrow">→</div>
+    <div class="trend-reality">
+      <div class="trend-era">2026</div>
+      <span class="tag tag-red">Incomplete ecosystem</span><br>
+      The surrounding ecosystem was not ready. AWS WAF integration, reasoning guardrails, and approval gates had not been completed when the agent reached production infrastructure. A production environment was deleted — not because the formal proof model was wrong, but because it was never fully wired into the systems around it. A strong foundation without a complete trust envelope.
+    </div>
+  </div>
+  <div class="trend-row">
+    <div class="trend-hype">
+      <div class="trend-era">2023</div>
+      <span class="tag tag-amber">Hype</span><br>
+      <strong>Vector DB as the AI brain</strong><br>
+      "Store everything and the model will find what it needs."
+    </div>
+    <div class="trend-arrow">→</div>
+    <div class="trend-reality">
+      <div class="trend-era">2025</div>
+      <span class="tag tag-amber">Wrong problem</span><br>
+      Retrieval without contextual (KG) chunking, recency weighting, and relevance scoring returns garbage at scale. Knowledge graph-aware chunking preserves semantic relationships that flat vector search destroys. The database was never the hard part. Memory architecture was.
+    </div>
+  </div>
+  <div class="trend-row">
+    <div class="trend-hype">
+      <div class="trend-era">2022–2023</div>
+      <span class="tag tag-amber">Hype</span><br>
+      <strong>Prompt engineering as a career</strong><br>
+      Elaborate templates, jailbreak techniques, chain-of-thought frameworks as competitive advantage.
+    </div>
+    <div class="trend-arrow">→</div>
+    <div class="trend-reality">
+      <div class="trend-era">2024–2025</div>
+      <span class="tag tag-teal">Evolved</span><br>
+      Models improved; generic prompts depreciated. Domain-fit workflow design — the right steps, verification logic, feedback signals — is the durable skill.
+    </div>
+  </div>
+</div>
+
+<div class="section-break">And yet</div>
+
+<p>The same era that produced these failures also produced systems that genuinely work in production. Wispr Flow crossed $700M in valuation not because it used the most powerful model, but because it understood that voice input is a context problem, not a transcription problem — and built for that. Cursor became the default coding environment for serious engineers because it builds a grounded world model of your repository rather than flooding the context window with your entire codebase. Harvey built the first legal AI that lawyers actually trust, not by making a more powerful LLM, but by building verification and citation logic into every step of the workflow.</p>
+
+<p>The difference in every case is not the model. It is the architecture of the system around the model. And that architecture, across every successful case, reflects the same five structural properties.</p>
+
+<div class="section-break" id="anchors">The five anchors</div>
+
+<!-- ══════════════════ ANCHOR 01 ══════════════════ -->
+<div class="anchor-section">
+  <div class="anchor-header">
+    <div class="anchor-num" style="background:var(--amber)">01</div>
+    <div class="anchor-meta">
+      <div class="anchor-label">Anchor 01</div>
+      <div class="anchor-title">Memory: retrieval, updates & learning</div>
+    </div>
+  </div>
+
+  <p>Memory in AI systems operates at two levels that most teams conflate, and the confusion causes silent failures in both directions. Understanding the distinction is the prerequisite for getting either right.</p>
+
+  <p><strong>Session-level memory</strong> is the KV (key-value) cache problem. When a large language model processes a long conversation or document, the attention mechanism computes key and value projections for every token at every layer. Without caching, these are recomputed from scratch on every new token — an O(n²) cost that becomes prohibitive at the context lengths modern applications require. KV cache management — deciding what to store, how long to retain it, how to share it across parallel requests, and when to evict — is now a first-class engineering concern, not an implementation detail.</p>
+
+  <p><strong>Systems-level memory</strong> is the indexing problem. Agents and services need fast, structured access to historical state: what happened in the last thousand log lines, what decisions were made in prior runs, what the last debugging session found. The standard answer — "put everything in a vector database" — fails at scale because it treats retrieval as a search problem when it is actually an architectural problem. The database is never the bottleneck; the chunking strategy, the recency weighting, and the relevance scoring are.</p>
+
+  <div class="figure">
+    <div class="figure-inner">
+      <svg width="100%" viewBox="0 0 660 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#6A6A62" stroke-width="1.5" stroke-linecap="round"/>
+          </marker>
+          <marker id="arr-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#B8720A" stroke-width="1.5" stroke-linecap="round"/>
+          </marker>
+        </defs>
+
+        <!-- Title -->
+        <text x="330" y="22" text-anchor="middle" class="diag-label" style="text-transform:uppercase;letter-spacing:.1em">Memory architecture — two levels</text>
+
+        <!-- SESSION LEVEL -->
+        <rect x="20" y="38" width="290" height="200" rx="10" fill="#FEF3DC" stroke="#B8720A" stroke-width="0.8"/>
+        <text x="30" y="58" class="diag-label" style="fill:#B8720A;text-transform:uppercase;letter-spacing:.1em">Session level · KV Cache</text>
+
+        <rect x="34" y="68" width="120" height="38" rx="6" fill="white" stroke="#E0C080" stroke-width="0.6"/>
+        <text x="94" y="83" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Incoming tokens</text>
+        <text x="94" y="97" text-anchor="middle" class="diag-muted">Q · K · V projections</text>
+
+        <rect x="176" y="68" width="120" height="38" rx="6" fill="white" stroke="#E0C080" stroke-width="0.6"/>
+        <text x="236" y="83" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">KV Cache store</text>
+        <text x="236" y="97" text-anchor="middle" class="diag-muted">Persist K,V per layer</text>
+
+        <line x1="154" y1="87" x2="174" y2="87" stroke="#B8720A" stroke-width="1" marker-end="url(#arr-amber)"/>
+
+        <rect x="34" y="124" width="258" height="34" rx="6" fill="white" stroke="#E0C080" stroke-width="0.6"/>
+        <text x="163" y="136" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Tiered eviction policy</text>
+        <text x="163" y="150" text-anchor="middle" class="diag-muted">hot → warm → evict based on recency + frequency</text>
+
+        <rect x="34" y="176" width="120" height="32" rx="6" fill="white" stroke="#E0C080" stroke-width="0.6"/>
+        <text x="94" y="188" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Shared pool</text>
+        <text x="94" y="200" text-anchor="middle" class="diag-muted">Parallel requests</text>
+
+        <rect x="174" y="176" width="118" height="32" rx="6" fill="white" stroke="#E0C080" stroke-width="0.6"/>
+        <text x="233" y="188" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Prefix caching</text>
+        <text x="233" y="200" text-anchor="middle" class="diag-muted">System prompt reuse</text>
+
+        <line x1="163" y1="158" x2="94" y2="175" stroke="#B8720A" stroke-width="0.8" marker-end="url(#arr-amber)"/>
+        <line x1="163" y1="158" x2="233" y2="175" stroke="#B8720A" stroke-width="0.8" marker-end="url(#arr-amber)"/>
+
+        <!-- SYSTEMS LEVEL -->
+        <rect x="340" y="38" width="300" height="200" rx="10" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="350" y="58" class="diag-label" style="fill:#0A6B50;text-transform:uppercase;letter-spacing:.1em">Systems level · Indexed state</text>
+
+        <rect x="354" y="68" width="82" height="50" rx="6" fill="white" stroke="#80C8A8" stroke-width="0.6"/>
+        <text x="395" y="86" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Logs</text>
+        <text x="395" y="100" text-anchor="middle" class="diag-muted">structured</text>
+        <text x="395" y="112" text-anchor="middle" class="diag-muted">events</text>
+
+        <rect x="449" y="68" width="82" height="50" rx="6" fill="white" stroke="#80C8A8" stroke-width="0.6"/>
+        <text x="490" y="86" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Decisions</text>
+        <text x="490" y="100" text-anchor="middle" class="diag-muted">past agent</text>
+        <text x="490" y="112" text-anchor="middle" class="diag-muted">actions</text>
+
+        <rect x="558" y="68" width="72" height="50" rx="6" fill="white" stroke="#80C8A8" stroke-width="0.6"/>
+        <text x="594" y="86" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Context</text>
+        <text x="594" y="100" text-anchor="middle" class="diag-muted">domain</text>
+        <text x="594" y="112" text-anchor="middle" class="diag-muted">knowledge</text>
+
+        <!-- Chunking -->
+        <rect x="354" y="136" width="276" height="30" rx="6" fill="white" stroke="#80C8A8" stroke-width="0.6"/>
+        <text x="492" y="147" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#3A3A35">Chunking + embedding + recency weighting</text>
+        <text x="492" y="160" text-anchor="middle" class="diag-muted">Relevance score = semantic · freshness · importance</text>
+
+        <line x1="395" y1="118" x2="450" y2="135" stroke="#0A6B50" stroke-width="0.8" marker-end="url(#arr)"/>
+        <line x1="490" y1="118" x2="490" y2="135" stroke="#0A6B50" stroke-width="0.8" marker-end="url(#arr)"/>
+        <line x1="594" y1="118" x2="535" y2="135" stroke="#0A6B50" stroke-width="0.8" marker-end="url(#arr)"/>
+
+        <!-- Tiers -->
+        <rect x="354" y="184" width="82" height="36" rx="6" fill="white" stroke="#80C8A8" stroke-width="0.6"/>
+        <text x="395" y="198" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#3A3A35;font-weight:600">Hot</text>
+        <text x="395" y="212" text-anchor="middle" class="diag-muted">RAM · ms</text>
+
+        <rect x="449" y="184" width="82" height="36" rx="6" fill="white" stroke="#80C8A8" stroke-width="0.6"/>
+        <text x="490" y="198" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#3A3A35;font-weight:600">Warm</text>
+        <text x="490" y="212" text-anchor="middle" class="diag-muted">Vector DB · sec</text>
+
+        <rect x="549" y="184" width="81" height="36" rx="6" fill="white" stroke="#80C8A8" stroke-width="0.6"/>
+        <text x="589" y="198" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#3A3A35;font-weight:600">Cold</text>
+        <text x="589" y="212" text-anchor="middle" class="diag-muted">Object store · hr</text>
+
+        <line x1="492" y1="166" x2="395" y2="183" stroke="#0A6B50" stroke-width="0.8" marker-end="url(#arr)"/>
+        <line x1="492" y1="166" x2="492" y2="183" stroke="#0A6B50" stroke-width="0.8" marker-end="url(#arr)"/>
+        <line x1="492" y1="166" x2="589" y2="183" stroke="#0A6B50" stroke-width="0.8" marker-end="url(#arr)"/>
+      </svg>
+    </div>
+    <div class="figure-caption">Figure 1 — Memory architecture operates at two distinct levels. KV cache management (left) handles session-level context for LLM inference. Indexed state management (right) handles systems-level retrieval for agents and services.</div>
+  </div>
+
+  <div class="usecase-grid">
+    <div class="usecase-card">
+      <div class="usecase-domain" style="color:var(--amber)">Agentic debugging</div>
+      <div class="usecase-text">Structured log indexing enables root-cause identification in seconds rather than hours of manual grepping. Pattern detection across prior incidents becomes automatic.</div>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-domain" style="color:var(--amber)">LLM infrastructure</div>
+      <div class="usecase-text">KV cache sharing across parallel requests to the same system prompt cuts per-token compute cost by 40–70% at production scale.</div>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-domain" style="color:var(--amber)">RAG pipelines</div>
+      <div class="usecase-text">Recency-weighted retrieval — prioritizing recent context over stale embeddings — dramatically improves factual accuracy for fast-changing domains.</div>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-domain" style="color:var(--amber)">Long-context sessions</div>
+      <div class="usecase-text">Sliding window compression with abstractive summarization preserves coherence across multi-hour agentic sessions without unbounded context growth.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ ANCHOR 02 ══════════════════ -->
+<div class="anchor-section">
+  <div class="anchor-header">
+    <div class="anchor-num" style="background:var(--teal)">02</div>
+    <div class="anchor-meta">
+      <div class="anchor-label">Anchor 02</div>
+      <div class="anchor-title">Reactive world models</div>
+    </div>
+  </div>
+
+  <p>A world model is any internal representation a system maintains of its environment — something it can query, update, and reason over to make decisions. In 2026, this is not primarily a robotics concept. It is the architectural pattern behind every production AI system that needs to understand the current state of a complex, changing world and act on it correctly.</p>
+
+  <p>The key word is <strong>reactive</strong>: the model must update as fast as the world changes, or its outputs begin to lag behind reality. A fraud detection system whose model of user behavior is twelve hours stale is not a fraud detection system — it is a delayed fraud report. A supply chain optimizer whose world model is updated weekly is a glorified spreadsheet.</p>
+
+  <p>For high-performance computing, industrial control systems, and real-time physical applications, the latency bar is even stricter. A reactive agent managing a power grid, a robotics arm, or an HPC job scheduler cannot afford round-trips to a cloud inference endpoint. This is precisely where fast, lightweight log processing pipelines become critical infrastructure. Tools like <strong>Fluent Bit</strong> — a sub-1MB log processor written in C, handling millions of events per second at near-zero CPU overhead — feed structured telemetry into the agent's world model continuously.<sup class="ref">[10]</sup> Combined with a secure, lightweight agent runtime like <strong>ZeroClaw</strong> (Rust, &lt;5MB RAM, &lt;10ms cold start), this stack enables reactive agents that operate at millisecond cadence in air-gapped, edge, and safety-critical environments without sacrificing the trust guarantees Anchor 05 requires. The architecture: Fluent Bit collects and structures events → ZeroClaw agent consumes the stream → world model updates in-process → action taken locally, no cloud round-trip needed.</p>
+
+  <div class="figure">
+    <div class="figure-inner">
+      <svg width="100%" viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg">
+        <text x="330" y="20" text-anchor="middle" class="diag-label" style="text-transform:uppercase;letter-spacing:.1em">Reactive world model — closed feedback loop</text>
+
+        <!-- Boxes -->
+        <rect x="20" y="38" width="130" height="50" rx="8" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="85" y="59" text-anchor="middle" class="diag-text" style="font-size:12px;fill:#054033;font-weight:600">Environment</text>
+        <text x="85" y="77" text-anchor="middle" class="diag-muted">Events · signals · state</text>
+
+        <rect x="200" y="38" width="130" height="50" rx="8" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="265" y="59" text-anchor="middle" class="diag-text" style="font-size:12px;fill:#054033;font-weight:600">Ingestion</text>
+        <text x="265" y="77" text-anchor="middle" class="diag-muted">Stream processing</text>
+
+        <rect x="380" y="38" width="130" height="50" rx="8" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="445" y="59" text-anchor="middle" class="diag-text" style="font-size:12px;fill:#054033;font-weight:600">World model</text>
+        <text x="445" y="77" text-anchor="middle" class="diag-muted">State graph · causality</text>
+
+        <rect x="530" y="38" width="110" height="50" rx="8" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="585" y="59" text-anchor="middle" class="diag-text" style="font-size:12px;fill:#054033;font-weight:600">Action</text>
+        <text x="585" y="77" text-anchor="middle" class="diag-muted">Decision · output</text>
+
+        <!-- Forward arrows -->
+        <line x1="150" y1="63" x2="198" y2="63" stroke="#0A6B50" stroke-width="1.2" marker-end="url(#arr)"/>
+        <line x1="330" y1="63" x2="378" y2="63" stroke="#0A6B50" stroke-width="1.2" marker-end="url(#arr)"/>
+        <line x1="510" y1="63" x2="528" y2="63" stroke="#0A6B50" stroke-width="1.2" marker-end="url(#arr)"/>
+
+        <!-- Feedback arc -->
+        <path d="M585 88 C585 150 85 150 85 89" fill="none" stroke="#B8720A" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#arr-amber)"/>
+        <text x="335" y="168" text-anchor="middle" class="diag-muted" style="fill:#B8720A">Feedback loop — observed outcome updates world model</text>
+
+        <!-- Labels below boxes -->
+        <text x="265" y="110" text-anchor="middle" class="diag-muted">Kafka · Flink · Pulsar</text>
+        <text x="445" y="110" text-anchor="middle" class="diag-muted">Causal graph · prediction</text>
+      </svg>
+    </div>
+    <div class="figure-caption">Figure 2 — A reactive world model closes the loop between observed environment and internal state. The feedback arc (amber dashed) is what separates reactive from static.</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Real-world examples</div>
+    Wispr Flow maintains a reactive model of your active application, cursor context, and recent vocabulary — updating it on every keystroke. This is why text arrives domain-appropriate rather than context-blind. Cursor maintains a reactive world model of your repository's symbol graph — updating it on every file save. This is why its suggestions reference the actual code you wrote five minutes ago, not a stale embedding of what it read at startup.
+  </div>
+</div>
+
+<!-- ══════════════════ ANCHOR 03 ══════════════════ -->
+<div class="anchor-section">
+  <div class="anchor-header">
+    <div class="anchor-num" style="background:var(--purple)">03</div>
+    <div class="anchor-meta">
+      <div class="anchor-label">Anchor 03</div>
+      <div class="anchor-title">Grounded world models</div>
+    </div>
+  </div>
+
+  <p>Grounded means the model's internal representations are tied to actual observable behavior — not just training patterns or static snapshots. An ungrounded model is like a map that was perfect at launch but never updated: technically a map, practically misleading. A grounded world model is one that detects when its predictions diverge from what the environment actually does, and self-corrects.</p>
+
+  <p>This is the difference between a model that was accurate at deployment and one that remains accurate six months later — after data distributions have shifted, after user behavior has evolved, after the domain has changed in ways no one anticipated. Most ML systems degrade silently. Grounded systems detect and correct that degradation.</p>
+
+  <div class="figure">
+    <div class="figure-inner">
+      <svg width="100%" viewBox="0 0 660 195" xmlns="http://www.w3.org/2000/svg">
+        <text x="330" y="20" text-anchor="middle" class="diag-label" style="text-transform:uppercase;letter-spacing:.1em">Grounded vs ungrounded — divergence over time</text>
+
+        <!-- Axes -->
+        <line x1="50" y1="160" x2="630" y2="160" stroke="#C8C4B0" stroke-width="1"/>
+        <line x1="50" y1="40" x2="50" y2="162" stroke="#C8C4B0" stroke-width="1"/>
+        <text x="340" y="180" text-anchor="middle" class="diag-muted">Time →</text>
+        <text x="30" y="105" text-anchor="middle" class="diag-muted" transform="rotate(-90,30,105)">Accuracy</text>
+
+        <!-- Ungrounded — decays -->
+        <path d="M70 55 C150 58 250 80 380 115 C450 130 530 148 610 158"
+              fill="none" stroke="#C04030" stroke-width="1.8" stroke-dasharray="7 4"/>
+        <text x="612" y="153" class="diag-muted" style="fill:#C04030">Ungrounded</text>
+
+        <!-- Grounded — stays high with corrections -->
+        <path d="M70 55 C120 52 180 56 230 58 C250 59 260 65 265 72
+                 C268 77 272 58 280 56 C340 50 400 54 450 56
+                 C465 57 470 65 475 72 C478 77 482 54 490 53 C550 50 590 52 610 53"
+              fill="none" stroke="#0A6B50" stroke-width="1.8"/>
+        <text x="612" y="50" class="diag-muted" style="fill:#0A6B50">Grounded</text>
+
+        <!-- Correction markers -->
+        <circle cx="265" cy="72" r="4" fill="none" stroke="#0A6B50" stroke-width="1.2"/>
+        <text x="265" y="88" text-anchor="middle" class="diag-muted" style="font-size:9px;fill:#0A6B50">correction</text>
+        <circle cx="475" cy="72" r="4" fill="none" stroke="#0A6B50" stroke-width="1.2"/>
+        <text x="475" y="88" text-anchor="middle" class="diag-muted" style="font-size:9px;fill:#0A6B50">correction</text>
+
+        <!-- Deployment marker -->
+        <line x1="70" y1="40" x2="70" y2="162" stroke="#C8C4B0" stroke-width="0.8" stroke-dasharray="3 3"/>
+        <text x="70" y="35" text-anchor="middle" class="diag-muted" style="font-size:9px">deploy</text>
+      </svg>
+    </div>
+    <div class="figure-caption">Figure 3 — Ungrounded models (red dashed) degrade silently as distributions shift. Grounded models (green) detect divergence and self-correct, maintaining accuracy over time.</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Deep tech — the math of grounding</div>
+    <p style="margin-bottom:.7rem">Distribution shift is formally detected using statistical divergence measures. The two most common in production systems:</p>
+    <p style="margin-bottom:.5rem"><strong>KL Divergence</strong> (Kullback-Leibler) — measures how much a probability distribution P (current data) diverges from a reference distribution Q (training data):</p>
+    <p style="font-family:'DM Mono',monospace;font-size:.78rem;background:#F0EEE8;padding:.5rem .8rem;border-radius:6px;margin-bottom:.7rem;color:#3A3A35">D<sub>KL</sub>(P ∥ Q) = Σ P(x) · log(P(x) / Q(x))</p>
+    <p style="margin-bottom:.5rem">When D<sub>KL</sub> exceeds a threshold ε (typically tuned per domain), retraining is triggered. A value of 0 means identical distributions. Values above 0.1–0.2 in production typically indicate meaningful drift.</p>
+    <p style="margin-bottom:.5rem"><strong>Population Stability Index (PSI)</strong> — the symmetric variant used widely in financial ML to monitor feature drift:</p>
+    <p style="font-family:'DM Mono',monospace;font-size:.78rem;background:#F0EEE8;padding:.5rem .8rem;border-radius:6px;margin-bottom:.7rem;color:#3A3A35">PSI = Σ (P<sub>actual</sub> − P<sub>expected</sub>) · ln(P<sub>actual</sub> / P<sub>expected</sub>)</p>
+    <p style="margin-bottom:.5rem">PSI &lt; 0.1: no significant change. PSI 0.1–0.25: moderate shift, monitor closely. PSI &gt; 0.25: major shift, retrain. In a grounded world model, PSI is computed continuously over a rolling window on each input feature — not as a batch job.</p>
+    <p><strong>Bayesian online learning</strong> extends this further: rather than detecting shift and triggering a discrete retrain, the model maintains a posterior distribution over its parameters and updates incrementally with each new observation. For physical systems — robotics, ADAS, sensor fusion — this is the preferred approach where real-time recalibration is required without the latency of a full retrain cycle.</p>
+  </div>
+
+  <p>The mechanisms of grounding include distribution shift detection (statistical monitors that fire before accuracy visibly degrades), targeted fine-tuning triggered by detected drift rather than calendar schedules, and continuous signals from analog or real-world sensors used as calibration inputs alongside discrete labels. The last point matters increasingly for physical systems: a warehouse robot's world model should be continuously calibrated by the actual objects it encounters, not just by simulation data from training.</p>
+</div>
+
+<!-- ══════════════════ ANCHOR 04 ══════════════════ -->
+<div class="anchor-section">
+  <div class="anchor-header">
+    <div class="anchor-num" style="background:var(--coral)">04</div>
+    <div class="anchor-meta">
+      <div class="anchor-label">Anchor 04</div>
+      <div class="anchor-title">Workflow intelligence</div>
+    </div>
+  </div>
+
+  <p>The most common failure mode in AI deployment is applying a general-purpose pipeline to a domain-specific problem. A single LLM call is a reasonable prototype. It is almost never a reasonable production architecture.</p>
+
+  <p>Workflow intelligence means the entire execution path — retrieval strategy, verification steps, output format, escalation logic, feedback signal — is designed around the actual structure of the problem. The model is one component in a purpose-built loop, not a standalone oracle. This is what separates Harvey from a legal chatbot, Abridge from a generic transcription service, Cursor from GitHub Copilot.</p>
+
+  <div class="figure">
+    <div class="figure-inner">
+      <svg width="100%" viewBox="0 0 660 170" xmlns="http://www.w3.org/2000/svg">
+        <text x="330" y="20" text-anchor="middle" class="diag-label" style="text-transform:uppercase;letter-spacing:.1em">Generic pipeline vs workflow intelligence</text>
+
+        <!-- Generic (top) -->
+        <text x="30" y="52" class="diag-muted" style="fill:#C04030;font-size:11px;font-weight:600">Generic</text>
+        <rect x="90" y="38" width="100" height="34" rx="6" fill="#FBE8E8" stroke="#C04030" stroke-width="0.8"/>
+        <text x="140" y="55" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#7A2020">Input</text>
+        <text x="140" y="68" text-anchor="middle" class="diag-muted" style="fill:#7A2020">raw prompt</text>
+        <line x1="190" y1="55" x2="214" y2="55" stroke="#C04030" stroke-width="1" marker-end="url(#arr)"/>
+        <rect x="215" y="38" width="130" height="34" rx="6" fill="#FBE8E8" stroke="#C04030" stroke-width="0.8"/>
+        <text x="280" y="55" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#7A2020">LLM call</text>
+        <text x="280" y="68" text-anchor="middle" class="diag-muted" style="fill:#7A2020">one step</text>
+        <line x1="345" y1="55" x2="369" y2="55" stroke="#C04030" stroke-width="1" marker-end="url(#arr)"/>
+        <rect x="370" y="38" width="110" height="34" rx="6" fill="#FBE8E8" stroke="#C04030" stroke-width="0.8"/>
+        <text x="425" y="55" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#7A2020">Output</text>
+        <text x="425" y="68" text-anchor="middle" class="diag-muted" style="fill:#7A2020">unverified</text>
+        <text x="520" y="57" class="diag-muted" style="fill:#C04030;font-size:10px">✗ no verification</text>
+        <text x="520" y="70" class="diag-muted" style="fill:#C04030;font-size:10px">✗ no escalation</text>
+
+        <!-- Workflow (bottom) -->
+        <text x="30" y="118" class="diag-muted" style="fill:#0A6B50;font-size:11px;font-weight:600">Workflow</text>
+        <rect x="90" y="104" width="88" height="34" rx="6" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="134" y="121" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#054033">Classify</text>
+        <text x="134" y="132" text-anchor="middle" class="diag-muted" style="fill:#054033">intent + domain</text>
+        <line x1="178" y1="121" x2="200" y2="121" stroke="#0A6B50" stroke-width="1" marker-end="url(#arr)"/>
+        <rect x="201" y="104" width="88" height="34" rx="6" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="245" y="121" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#054033">Retrieve</text>
+        <text x="245" y="132" text-anchor="middle" class="diag-muted" style="fill:#054033">grounded context</text>
+        <line x1="289" y1="121" x2="311" y2="121" stroke="#0A6B50" stroke-width="1" marker-end="url(#arr)"/>
+        <rect x="312" y="104" width="88" height="34" rx="6" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="356" y="121" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#054033">Generate</text>
+        <text x="356" y="132" text-anchor="middle" class="diag-muted" style="fill:#054033">model step</text>
+        <line x1="400" y1="121" x2="422" y2="121" stroke="#0A6B50" stroke-width="1" marker-end="url(#arr)"/>
+        <rect x="423" y="104" width="88" height="34" rx="6" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="467" y="121" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#054033">Verify</text>
+        <text x="467" y="132" text-anchor="middle" class="diag-muted" style="fill:#054033">cite · score · gate</text>
+        <line x1="511" y1="121" x2="533" y2="121" stroke="#0A6B50" stroke-width="1" marker-end="url(#arr)"/>
+        <rect x="534" y="104" width="88" height="34" rx="6" fill="#E0F5EE" stroke="#0A6B50" stroke-width="0.8"/>
+        <text x="578" y="121" text-anchor="middle" class="diag-text" style="font-size:10px;fill:#054033">Output</text>
+        <text x="578" y="132" text-anchor="middle" class="diag-muted" style="fill:#054033">or escalate</text>
+      </svg>
+    </div>
+    <div class="figure-caption">Figure 4 — Workflow intelligence replaces single LLM calls with purpose-built pipelines. Each step is designed for the domain's actual structure.</div>
+  </div>
+
+  <div class="product-row">
+    <div class="product-card" style="border-top-color:var(--blue)"><div class="product-name">Cursor</div><div class="product-domain" style="color:var(--blue)">Developer tooling</div><div class="product-text">Symbol graph lookup → semantic diff → targeted suggestion. Three steps, not one.</div><div class="product-anchor" style="color:var(--blue)">Anchors 01 + 03</div></div>
+    <div class="product-card" style="border-top-color:var(--teal)"><div class="product-name">Abridge</div><div class="product-domain" style="color:var(--teal)">Healthcare</div><div class="product-text">Transcript → speaker diarization → clinical structuring in physician's own style.</div><div class="product-anchor" style="color:var(--teal)">Anchors 03 + 04</div></div>
+    <div class="product-card" style="border-top-color:var(--coral)"><div class="product-name">Harvey</div><div class="product-domain" style="color:var(--coral)">Legal AI</div><div class="product-text">Draft → citation verification → practice-area convention enforcement before output.</div><div class="product-anchor" style="color:var(--coral)">Anchors 03 + 04 + 05</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════ ANCHOR 05 ══════════════════ -->
+<div class="anchor-section" id="security">
+  <div class="anchor-header">
+    <div class="anchor-num" style="background:var(--blue)">05</div>
+    <div class="anchor-meta">
+      <div class="anchor-label">Anchor 05 · Foundation</div>
+      <div class="anchor-title">Security & trust across every surface</div>
+    </div>
+  </div>
+
+  <p>Security in AI systems is not about locking down the model. It is about enforcing trust across every surface the system touches. An agentic system that writes code, queries databases, calls external APIs, and modifies infrastructure is simultaneously an attack surface and a liability surface. If trust is not structural — encoded in the architecture from the start — it will be absent when it matters most.</p>
+
+  <p>The Kiro incident is not a cautionary tale about a bad model. It is a cautionary tale about deploying capability without trust architecture. The agent reasoned correctly given its objective. The problem was the objective itself had no constraints, no approval gates, no reversibility check, no scope limit.</p>
+
+  <!-- KIRO -->
+  <div class="kiro-block">
+    <div class="kiro-eyebrow"><span class="kiro-dot"></span>Case study · March 2026 · Amazon / Kiro</div>
+    <h3>A strong foundation. An incomplete trust envelope.</h3>
+    <p>Kiro's founding engineers built something genuinely ambitious: a formal verification framework connecting specifications to implementation — one of the few serious attempts to give agentic systems provably correct behavior. The intent was sound. The problem was that the surrounding ecosystem was not complete when the system reached production. AWS WAF integration had not been wired in. Reasoning guardrails were absent. Approval gates for destructive actions had not been implemented. When the agent encountered a configuration error, it resolved it the only way its scope permitted — by deleting the production environment. The formal proof model was not wrong. It was simply never connected to the infrastructure it needed to be safe.</p>
+    <div class="kiro-stats">
+      <div class="kiro-stat"><div class="kiro-stat-v">6 hrs</div><div class="kiro-stat-l">Outage duration</div></div>
+      <div class="kiro-stat"><div class="kiro-stat-v">6.3M</div><div class="kiro-stat-l">Orders lost</div></div>
+      <div class="kiro-stat"><div class="kiro-stat-v">0</div><div class="kiro-stat-l">Approval gates triggered</div></div>
+    </div>
+    <div class="kiro-lesson">The lesson is not that formal verification is the wrong approach — it is precisely the right approach. The lesson is that a verification framework is only as safe as the ecosystem it is embedded in. Kiro needed AWS WAF, reasoning guardrails, and approval gates to be complete before reaching production infrastructure. The foundation was solid. The envelope around it was not finished. That gap is what Anchor 05 exists to close.</div>
+  </div>
+
+  <h3>The trust architecture checklist</h3>
+  <p>Secure agentic systems require five structural properties, none of which are optional:</p>
+  <div class="usecase-grid">
+    <div class="usecase-card"><div class="usecase-domain" style="color:var(--blue)">Least-privilege scoping</div><div class="usecase-text">Agents receive only the permissions the current task requires — nothing inherited, nothing persistent. Reauthorize on each task boundary.</div></div>
+    <div class="usecase-card"><div class="usecase-domain" style="color:var(--blue)">Human approval gates</div><div class="usecase-text">Any action that is irreversible, high blast-radius, or outside normal operating parameters requires explicit human approval before execution.</div></div>
+    <div class="usecase-card"><div class="usecase-domain" style="color:var(--blue)">Full audit trails</div><div class="usecase-text">Every agent action logged with who invoked it, with what inputs, at what time, with what outputs. Not optional for regulated environments.</div></div>
+    <div class="usecase-card"><div class="usecase-domain" style="color:var(--blue)">Sandboxed execution</div><div class="usecase-text">All model-generated code runs in an isolated environment — no production access until explicit promotion by a human or verified gate.</div></div>
+    <div class="usecase-card"><div class="usecase-domain" style="color:var(--blue)">Input sanitization</div><div class="usecase-text">Every prompt feeding into tool calls is sanitized for prompt injection. This is a real attack vector, not theoretical — especially in multi-agent pipelines.</div></div>
+    <div class="usecase-card"><div class="usecase-domain" style="color:var(--blue)">Inter-agent verification</div><div class="usecase-text">In multi-agent systems, inter-agent messages must be signed and verified. No implicit trust between agents even within the same system.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════ NEMOCLAW ══════════════════ -->
+<div class="section-break" id="nemoclaw">Current developments · March 2026</div>
+
+<h2>NemoClaw: Nvidia's answer to the trust gap</h2>
+
+<p>Today at GTC 2026 (March 16–19, San Jose), Nvidia CEO Jensen Huang officially announced <strong>NemoClaw</strong> — framing it as nothing less than a new era of software infrastructure. Huang described OpenClaw as <em>"the operating system for personal AI"</em> and characterized the moment as <em>"a new renaissance in software"</em> — signaling that Nvidia sees agentic AI infrastructure as a platform-level opportunity on the scale of what Windows was for desktop computing.<sup class="ref">[2]</sup> It is the clearest signal yet that the enterprise AI industry has moved from debating whether agentic systems need security architecture to building it in by default.</p>
+
+<p>NemoClaw is an open-source platform for deploying enterprise AI agents — built for the specific failure modes that have emerged from the OpenClaw/autonomous agent explosion of 2025.<sup class="ref">[3]</sup> Three things distinguish it from prior approaches:</p>
+
+<div class="ecosystem-card">
+  <div class="ecosystem-header">
+    <div class="ecosystem-dot" style="background:#76B900"></div>
+    <div class="ecosystem-name">NemoClaw — Nvidia</div>
+    <span class="ecosystem-tag" style="background:#F0F8E8;color:#4A7800">Open source · Enterprise</span>
+  </div>
+  <div class="ecosystem-body">
+    <p><strong>Security-first architecture.</strong> Built-in security and privacy tools at the platform level — not bolted on. NemoClaw includes built-in security and privacy tools, addressing concerns raised about security risks associated with early open-source AI agent frameworks. This is a direct response to OpenClaw's architectural vulnerabilities and the MCP stdio server inheritance problem.</p>
+    <p style="margin-top:.8rem"><strong>Hardware-agnostic.</strong> NemoClaw enables enterprises to roll out AI agents to handle workflow tasks, and its open-source nature allows companies to integrate the platform even if their software does not run on Nvidia chips. This is strategically significant: Nvidia is betting on ecosystem dominance over hardware lock-in — mirroring Meta's Llama strategy.</p>
+    <p style="margin-top:.8rem"><strong>Enterprise-grade agent lifecycle.</strong> The initiative aligns with Nvidia's broader push into AI agent technologies. The company has recently introduced foundational models such as Nemotron and Cosmos, while expanding its NeMo platform to support the entire AI agent lifecycle, from data curation and customisation to monitoring and optimisation.</p>
+    <div class="ecosystem-props">
+      <div class="ecosystem-prop"><div class="prop-val">Open source</div><div class="prop-label">Apache-style licensing</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">Hardware-agnostic</div><div class="prop-label">Works without Nvidia chips</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">Built-in security</div><div class="prop-label">Trust architecture at platform level</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">$28B market</div><div class="prop-label">Projected agentic AI TAM by 2027</div></div>
+    </div>
+  </div>
+</div>
+
+<p>Nvidia has reportedly pitched NemoClaw to Salesforce, Cisco, Google, Adobe, and CrowdStrike — a partner list that signals enterprise CRM, networking, productivity, and security as the first deployment verticals.<sup class="ref">[4]</sup> The open-source model means early partners contribute to development in exchange for early access — a community flywheel that mirrors how OpenClaw grew, but with enterprise controls and security review built into the governance model from day one.</p>
+
+<div class="callout">
+  <div class="callout-label">What NemoClaw means for Anchor 05</div>
+  NemoClaw is effectively an industrialization of Anchor 05. The security primitives that previously required teams to build from scratch — scoped permissions, audit trails, sandboxed execution — are being packaged as platform defaults. This shifts the question from "should we build trust architecture?" to "which platform's trust architecture should we use?"
+</div>
+
+<!-- ══════════════════ ZEROCLAW ══════════════════ -->
+<h2 id="zeroclaw">ZeroClaw: when Rust becomes the trust layer</h2>
+
+<p>While NemoClaw addresses enterprise trust at the platform level, a parallel development from the open-source community addresses trust at the runtime level — through a fundamentally different architectural choice: building in Rust.</p>
+
+<p>ZeroClaw emerged in late 2024 as a ground-up rethinking of AI agent infrastructure. It is not OpenClaw rewritten in Rust. It is a different answer to the question of what agent infrastructure should be — one that treats security not as a feature to be added but as an emergent property of the memory model.<sup class="ref">[5]</sup></p>
+
+<div class="ecosystem-card">
+  <div class="ecosystem-header">
+    <div class="ecosystem-dot" style="background:#D56A00"></div>
+    <div class="ecosystem-name">ZeroClaw</div>
+    <span class="ecosystem-tag" style="background:#FEF3DC;color:#7A4A05">Rust · Open source · Security-first</span>
+  </div>
+  <div class="ecosystem-body">
+    <p>ZeroClaw is built with a security-first architecture. It features gateway pairing with device codes, deny-by-default channel allowlists, filesystem sandboxing with workspace scoping, rate limiting, and encrypted credential storage.</p>
+    <p style="margin-top:.8rem">The Rust choice is not aesthetic. Rust's ownership system eliminates buffer overflows, use-after-free vulnerabilities, and data races at compile time — entire vulnerability classes that have historically been sources of CVEs in systems software. OpenClaw's two critical CVEs in early 2026 (CVE-2026-25253: one-click RCE, CVE-2026-26327: authentication bypass) are the class of vulnerabilities Rust makes structurally impossible.</p>
+    <div class="ecosystem-props">
+      <div class="ecosystem-prop"><div class="prop-val">&lt;5 MB RAM</div><div class="prop-label">Idle footprint</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">&lt;10 ms</div><div class="prop-label">Cold start time</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">8.8 MB</div><div class="prop-label">Single binary size</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">22+ providers</div><div class="prop-label">LLM provider support</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">15+ channels</div><div class="prop-label">Messaging integrations</div></div>
+      <div class="ecosystem-prop"><div class="prop-val">20K+ stars</div><div class="prop-label">GitHub by early 2026</div></div>
+    </div>
+  </div>
+</div>
+
+<p>The footprint comparison with OpenClaw is stark. OpenClaw requires a Node.js runtime adding approximately 390MB of overhead. ZeroClaw is a single Rust binary that runs comfortably on a $10 Raspberry Pi. ZeroClaw turns an AI agent into a 3.4MB system daemon with a cold start under 10 milliseconds. For edge deployments, embedded systems, and cost-sensitive infrastructure, this is not a marginal improvement — it is a different category.</p>
+
+  <div class="figure">
+    <div class="figure-inner">
+      <svg width="100%" viewBox="0 0 660 195" xmlns="http://www.w3.org/2000/svg">
+        <text x="330" y="20" text-anchor="middle" class="diag-label" style="text-transform:uppercase;letter-spacing:.1em">Agent runtime comparison — footprint &amp; security model</text>
+
+        <!-- Headers -->
+        <text x="140" y="42" text-anchor="middle" class="diag-text" style="font-size:12px;font-weight:600;fill:#3A3A35">OpenClaw</text>
+        <text x="380" y="42" text-anchor="middle" class="diag-text" style="font-size:12px;font-weight:600;fill:#D56A00">ZeroClaw (Rust)</text>
+        <text x="570" y="42" text-anchor="middle" class="diag-text" style="font-size:12px;font-weight:600;fill:#4A7800">NemoClaw (Nvidia)</text>
+
+        <!-- Row labels -->
+        <text x="18" y="70" class="diag-muted">Runtime</text>
+        <text x="18" y="98" class="diag-muted">RAM idle</text>
+        <text x="18" y="126" class="diag-muted">Cold start</text>
+        <text x="18" y="154" class="diag-muted">Security</text>
+        <text x="18" y="182" class="diag-muted">Target</text>
+
+        <!-- OpenClaw -->
+        <text x="140" y="70" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#9A2828">Node.js (390MB+)</text>
+        <text x="140" y="98" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#9A2828">~450 MB</text>
+        <text x="140" y="126" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#9A2828">2–5 sec</text>
+        <text x="140" y="154" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#9A2828">Plugin model (CVEs)</text>
+        <text x="140" y="182" text-anchor="middle" class="diag-muted">Personal use</text>
+
+        <!-- ZeroClaw -->
+        <text x="380" y="70" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#D56A00">Rust static binary</text>
+        <text x="380" y="98" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#D56A00">&lt;5 MB</text>
+        <text x="380" y="126" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#D56A00">&lt;10 ms</text>
+        <text x="380" y="154" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#D56A00">Compile-time (Rust)</text>
+        <text x="380" y="182" text-anchor="middle" class="diag-muted">Edge · self-hosted</text>
+
+        <!-- NemoClaw -->
+        <text x="570" y="70" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#4A7800">Platform / SDK</text>
+        <text x="570" y="98" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#4A7800">Platform-managed</text>
+        <text x="570" y="126" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#4A7800">Platform-managed</text>
+        <text x="570" y="154" text-anchor="middle" class="diag-text" style="font-size:11px;fill:#4A7800">Built-in + enterprise</text>
+        <text x="570" y="182" text-anchor="middle" class="diag-muted">Enterprise · cloud</text>
+
+        <!-- Dividers -->
+        <line x1="60" y1="50" x2="640" y2="50" stroke="#E0DDD5" stroke-width="0.6"/>
+        <line x1="60" y1="78" x2="640" y2="78" stroke="#E0DDD5" stroke-width="0.5"/>
+        <line x1="60" y1="106" x2="640" y2="106" stroke="#E0DDD5" stroke-width="0.5"/>
+        <line x1="60" y1="134" x2="640" y2="134" stroke="#E0DDD5" stroke-width="0.5"/>
+        <line x1="60" y1="162" x2="640" y2="162" stroke="#E0DDD5" stroke-width="0.5"/>
+        <line x1="255" y1="50" x2="255" y2="190" stroke="#E0DDD5" stroke-width="0.6"/>
+        <line x1="480" y1="50" x2="480" y2="190" stroke="#E0DDD5" stroke-width="0.6"/>
+      </svg>
+    </div>
+    <div class="figure-caption">Figure 5 — Agent runtime comparison. ZeroClaw's Rust architecture eliminates entire CVE vulnerability classes at compile time. NemoClaw addresses enterprise trust at the platform level. OpenClaw's plugin model has produced multiple critical CVEs in 2026.</div>
+  </div>
+
+  <p>ZeroClaw's trait-driven architecture deserves particular attention for teams building custom agent infrastructure. Instead of a plugin system, it uses Rust traits. The core problem with traditional plugin systems isn't implementation quality — it's the model itself. When you install a plugin, you're downloading code from the internet and executing it inside your application's process, with your application's permissions. The trait approach means extensions require writing Rust and compiling a new binary — a smaller, verified extension surface is better than a large, unverified one.</p>
+
+  <div class="code-block"><span class="cm">// ZeroClaw's channel trait — every integration is type-safe at compile time</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ty">Channel</span>: <span class="ty">Send</span> + <span class="ty">Sync</span> + <span class="ty">'static</span> {
+    <span class="kw">fn</span> <span class="fn">name</span>(&amp;<span class="kw">self</span>) -&gt; &amp;<span class="ty">str</span>;
+    <span class="kw">async fn</span> <span class="fn">connect</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>) -&gt; <span class="ty">Result</span>&lt;()&gt;;
+    <span class="kw">async fn</span> <span class="fn">receive</span>(&amp;<span class="kw">self</span>) -&gt; <span class="ty">Result</span>&lt;<span class="ty">Message</span>&gt;;
+    <span class="kw">async fn</span> <span class="fn">send</span>(&amp;<span class="kw">self</span>, msg: <span class="ty">Response</span>) -&gt; <span class="ty">Result</span>&lt;()&gt;;
+    <span class="kw">async fn</span> <span class="fn">disconnect</span>(&amp;<span class="kw">self</span>) -&gt; <span class="ty">Result</span>&lt;()&gt;;
+}
+<span class="cm">// Compiler guarantees: type safety, thread safety, completeness.
+// A missing method or wrong type = compile error, not a runtime crash in prod.</span></div>
+
+  <div class="callout">
+    <div class="callout-label">NemoClaw + ZeroClaw — complementary, not competing</div>
+    NemoClaw and ZeroClaw solve different parts of the same problem. NemoClaw is platform infrastructure for enterprise deployment — managed, integrated with the Salesforce/Cisco/Google ecosystem, with enterprise SLAs. ZeroClaw is a runtime for teams that need to own their agent infrastructure completely — edge deployment, air-gapped environments, organizations with strict data residency requirements. A mature AI organization will likely use both: NemoClaw for enterprise workflow agents, ZeroClaw-style runtimes for edge and infrastructure agents where footprint and security guarantees matter most.
+  </div>
+
+<!-- ══════════════════ WISPR + PRODUCTS ══════════════════ -->
+<div class="section-break">Systems that got all five anchors right</div>
+
+<h2>What good looks like: Wispr Flow</h2>
+
+<p>Wispr Flow is the clearest example in the consumer space of what happens when all five anchors are applied to a problem that everyone else solved incorrectly.</p>
+
+<p>It is worth noting what the earlier generation of voice tools looked like before LLMs absorbed the stack. Pre-LLM voice systems relied on a pipeline of discrete, hand-crafted components: a contextual vocabulary library that loaded domain-specific terms — medical, legal, technical — based on the active application; explicit syntax and semantics checks that validated whether a recognized phrase was grammatically plausible in context; and phonetic coherence algorithms that resolved ambiguous phoneme sequences by checking agreement with surrounding words. A phrase like "the patient's prognosis" was distinguished from a mis-transcription not by a neural network but by a phonetic agreement model cross-referenced against a clinical vocabulary index. These systems were brittle, expensive to maintain, and required expert tuning per domain. LLMs replaced the entire pipeline — absorbing vocabulary, syntax, semantics, and phonetic context into a single forward pass. The improvement in robustness was dramatic. What Wispr Flow demonstrated is that even with LLMs handling the linguistic core, the architecture around them — memory, context model, workflow, trust — still determines whether the system is genuinely useful or merely impressive in a demo.</p>
+
+<p>The incumbent approach to voice-to-text — OS dictation, Dragon, early AI tools — treated the problem as transcription: convert speech to words accurately. Wispr Flow reframed the problem: the goal is not transcription, it is producing the text the user intended to produce, in the context they are working in, with their vocabulary and formatting conventions. That reframing required all five anchors: memory of the user's vocabulary and domain (01), a reactive model of the active application and cursor context (02), a world model grounded in the user's actual writing style (03), a workflow designed around text production rather than speech recognition (04), and a trust model that keeps voice data on-device and never exposes it to the active application (05).</p>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--amber)">$700M</div>
+      <div class="stat-label">Valuation · $81M raised</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--teal)">50%+</div>
+      <div class="stat-label">Characters written via app after 3 months</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--blue)">270</div>
+      <div class="stat-label">Fortune 500 companies reached</div>
+    </div>
+  </div>
+
+<p>The Android launch in February 2026 added 30% lower latency and Hinglish support — the first voice model to handle natural Hindi-English code-switching at production quality. Neither of these is a model capability story. Latency is a systems architecture story (memory management, streaming inference, edge computation). Hinglish support is a grounded world model story (training on code-switched data from actual Indian English users, not approximations).</p>
+
+<!-- ══════════════════ PRINCIPLE ══════════════════ -->
+<div class="section-break">The principle</div>
+
+<div class="principle-block">
+  <p>High-functioning AI systems are not defined by the model at the center. They are defined by how memory is organized, how the system reacts to a changing world, how models stay grounded in actual behavior, how tightly the workflow fits the domain, and whether every surface — agents, databases, APIs, coding assistants — is wrapped in enforceable trust.<br><br>The trends will keep coming. The acronyms will keep multiplying. NemoClaw is this week's announcement; something else will be next week's. The organizations that build durable systems will be the ones who stopped asking "what's the latest thing?" and started asking: <em>which anchor does this actually strengthen?</em></p>
+</div>
+
+<!-- ══════════════════ REFERENCES ══════════════════ -->
+<div class="references">
+  <h3>References &amp; Further Reading</h3>
+  <ol class="ref-list">
+    <li data-n="1">MCP stdio server security — CVE-2025-6514 documentation and server inheritance model. <em>Security researchers, 2025.</em></li>
+    <li data-n="2">CNBC: <a href="https://www.cnbc.com/2026/03/10/nvidia-open-source-ai-agent-platform-nemoclaw-wired-agentic-tools-openclaw-clawdbot-moltbot.html">Nvidia plans open-source AI agent platform 'NemoClaw'</a>. March 10, 2026.</li>
+    <li data-n="3">Techloy: <a href="https://www.techloy.com/nvidia-to-launch-open-source-ai-agent-nemoclaw-at-gtc-2026-what-we-know-so-far/">Nvidia to launch NemoClaw at GTC 2026</a>. March 2026.</li>
+    <li data-n="4">OpenSourceForYou: <a href="https://www.opensourceforu.com/2026/03/nvidia-moves-into-open-source-ai-agents-with-nemoclaw-enterprise-platform/">Nvidia Moves Into Open Source AI Agents With NemoClaw</a>. March 2026.</li>
+    <li data-n="5">ZeroClaw: <a href="https://github.com/zeroclaw-labs/zeroclaw">GitHub repository — zeroclaw-labs/zeroclaw</a>. Fast, small, fully autonomous AI infrastructure in Rust.</li>
+    <li data-n="6">ZeroClaw vs OpenClaw vs PicoClaw: <a href="https://zeroclaws.io/blog/zeroclaw-vs-openclaw-vs-picoclaw-2026/">Definitive 2026 comparison</a>. ZeroClaw Blog, February 2026.</li>
+    <li data-n="7">DEV Community: <a href="https://dev.to/brooks_wilson_36fbefbbae4/zeroclaw-a-lightweight-secure-rust-agent-runtime-redefining-openclaw-infrastructure-2cl0">ZeroClaw: Rebuilding AI Agent Infrastructure from the Ground Up in Rust</a>. 2026.</li>
+    <li data-n="8">Wispr Flow — product metrics from public company materials. <em>February 2026.</em></li>
+    <li data-n="9">Gartner: 73% of organizations face integration issues with agentic AI deployments. <em>2025 survey.</em></li>
+    <li data-n="10">Fluent Bit: <a href="https://fluentbit.io">fluentbit.io</a> — open-source log processor and forwarder. Sub-1MB binary, handles millions of events/sec. CNCF graduated project.</li>
+    <li data-n="11">Jensen Huang, GTC 2026 keynote: <em>"A new renaissance in software"</em> — NemoClaw announcement, March 16, 2026, San Jose.</li>
+    <li data-n="12">Kullback, S. and Leibler, R.A. (1951). "On Information and Sufficiency." <em>Annals of Mathematical Statistics</em>, 22(1):79–86. Foundational reference for KL divergence.</li>
+    <li data-n="13">Population Stability Index (PSI) for production ML monitoring. <em>Originally from credit scoring literature; now standard in production ML observability.</em></li>
+    <li data-n="14">Knowledge Graph-aware chunking for RAG: preserving semantic relationships across chunk boundaries. <em>Various — 2024–2025 RAG systems literature.</em></li>
+  </ol>
+</div>
+
+</div><!-- end article-body -->
+
+<script>
+// Reading progress bar
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  bar.style.width = Math.min(pct, 100) + '%';
+});
+</script>
+
+</body>
+</html>
