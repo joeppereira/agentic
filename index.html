@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Systems Field Guide · 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --amber: #B8720A; --amber-l: #FEF3DC;
+  --ink: #1A1A17; --ink-2: #3A3A35; --ink-3: #6A6A62;
+  --paper: #FAFAF7; --paper-2: #F4F3EE; --paper-3: #ECEAE2;
+  --border: rgba(26,26,23,0.12);
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+.card {
+  max-width: 560px;
+  width: 100%;
+}
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: .8rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  background: var(--amber);
+}
+h1 {
+  font-family: 'Lora', Georgia, serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: .6rem;
+}
+h1 em { font-style: italic; color: var(--amber); }
+.desc {
+  font-size: .95rem;
+  font-weight: 300;
+  color: var(--ink-2);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 1.5rem;
+}
+.links { display: flex; flex-direction: column; gap: .7rem; }
+a.item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .9rem 1.1rem;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color .15s, background .15s, transform .15s;
+}
+a.item:hover {
+  border-color: var(--amber);
+  background: var(--amber-l);
+  transform: translateX(3px);
+}
+a.item.primary {
+  border-color: var(--amber);
+  background: var(--amber-l);
+}
+.item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+.item-icon.html { background: #E8F4E8; }
+.item-icon.pdf-article { background: #E8EEF8; }
+.item-icon.pdf-deck { background: #F4EAE0; }
+.item-body { flex: 1; }
+.item-title {
+  font-size: .92rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: .1rem;
+}
+.item-desc {
+  font-size: .78rem;
+  font-weight: 300;
+  color: var(--ink-3);
+}
+.item-arrow {
+  font-size: .9rem;
+  color: var(--ink-3);
+  transition: color .15s;
+}
+a.item:hover .item-arrow { color: var(--amber); }
+.footer {
+  margin-top: 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .08em;
+  color: var(--ink-3);
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <p class="eyebrow">2026 · AI Systems Field Guide</p>
+  <h1>Five anchors for systems<br>that <em>actually work.</em></h1>
+  <p class="desc">High-functioning AI isn't about the model at the center. It's about memory, reactive world models, grounded behavior, workflow intelligence, and trust — across every surface.</p>
+  <div class="divider"></div>
+  <div class="links">
+    <a href="ai_anchors_article.html" class="item primary">
+      <div class="item-icon html">🌐</div>
+      <div class="item-body">
+        <div class="item-title">Full article — interactive web version</div>
+        <div class="item-desc">Medium-style long read · diagrams · NemoClaw · ZeroClaw · references</div>
+      </div>
+      <span class="item-arrow">→</span>
+    </a>
+    <a href="ai_anchors_article.pdf" class="item">
+      <div class="item-icon pdf-article">📄</div>
+      <div class="item-body">
+        <div class="item-title">Print article — PDF</div>
+        <div class="item-desc">11 pages · clean reading layout · all content · 14 references</div>
+      </div>
+      <span class="item-arrow">↓</span>
+    </a>
+    <a href="ai_anchors_linkedin.pdf" class="item">
+      <div class="item-icon pdf-deck">📊</div>
+      <div class="item-body">
+        <div class="item-title">Presentation deck — PDF</div>
+        <div class="item-desc">12 slides · LinkedIn carousel format · case studies · five anchors</div>
+      </div>
+      <span class="item-arrow">↓</span>
+    </a>
+  </div>
+  <p class="footer">March 2026 · joeppereira.github.io/agentic</p>
+</div>
+</body>
+</html>
