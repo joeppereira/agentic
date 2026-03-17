@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6: The Trust Ecosystem — NemoClaw, ZeroClaw & the Age of Secure Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --amber: #B8720A; --amber-l: #FEF3DC; --amber-d: #7A4A05;
+  --teal: #0A6B50; --teal-l: #E0F5EE; --teal-d: #054033;
+  --purple: #4A42AA; --purple-l: #EDECFD; --purple-d: #312B7A;
+  --coral: #8F3818; --coral-l: #FAE9E2; --coral-d: #5E2510;
+  --blue: #185FA5; --blue-l: #E4EFF9; --blue-d: #0A3A70;
+  --green: #3B6D11; --green-l: #EAF3DE;
+  --red: #9A2828; --red-l: #FBEBEB;
+  --ink: #1A1A17; --ink-2: #3A3A35; --ink-3: #6A6A62;
+  --paper: #FAFAF7; --paper-2: #F4F3EE; --paper-3: #ECEAE2;
+  --border: rgba(26,26,23,0.10); --border-2: rgba(26,26,23,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --sans: 'Source Sans 3', system-ui, sans-serif;
+  --mono: 'DM Mono', 'Courier New', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 18px; scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); line-height: 1.8; -webkit-font-smoothing: antialiased; }
+
+#progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--amber); width: 0%; z-index: 100; transition: width .1s linear; }
+
+nav {
+  position: sticky; top: 0; z-index: 90;
+  background: rgba(250,250,247,.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: .6rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--ink-3);
+}
+.nav-book { font-family: var(--serif); font-size: .85rem; font-style: italic; color: var(--ink-3); }
+.nav-ch { font-weight: 500; color: var(--amber); }
+.nav-links { display: flex; gap: 1.2rem; }
+.nav-links a { color: var(--ink-3); text-decoration: none; }
+.nav-links a:hover { color: var(--ink); }
+
+.hero { max-width: 720px; margin: 0 auto; padding: 4rem 1.5rem 2.5rem; }
+.ch-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--amber-d); background: var(--amber-l); padding: 3px 10px; border-radius: 99px;
+  margin-bottom: 1rem;
+}
+h1 { font-family: var(--serif); font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 600; line-height: 1.12; color: var(--ink); margin-bottom: .5rem; }
+h1 em { font-style: italic; color: var(--amber); }
+.hero-sub { font-family: var(--sans); font-size: 1.05rem; font-weight: 300; color: var(--ink-2); line-height: 1.7; margin-bottom: 1rem; max-width: 580px; }
+.meta { font-family: var(--mono); font-size: .65rem; letter-spacing: .06em; color: var(--ink-3); display: flex; gap: 1.4rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.meta a { color: var(--amber); text-decoration: none; }
+
+.article-body { max-width: 720px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+p { margin-bottom: 1.3rem; font-size: 1rem; }
+h2 { font-family: var(--serif); font-size: 1.65rem; font-weight: 600; color: var(--ink); margin: 3.5rem 0 .9rem; line-height: 1.25; }
+h2 em { font-style: italic; color: var(--amber); }
+h3 { font-family: var(--sans); font-size: .9rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); margin: 2.2rem 0 .6rem; }
+strong { font-weight: 600; color: var(--ink); }
+a { color: var(--blue); text-decoration: underline; text-decoration-color: rgba(24,95,165,.3); text-underline-offset: 2px; }
+a:hover { text-decoration-color: var(--blue); }
+sup.ref { font-family: var(--mono); font-size: .6rem; color: var(--amber); }
+
+.section-break { display: flex; align-items: center; gap: 1rem; margin: 2.8rem 0; font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.section-break::before, .section-break::after { content: ''; flex: 1; height: 1px; background: var(--border-2); }
+
+.pullquote { border-left: 4px solid var(--amber); padding: .9rem 1.3rem; margin: 2rem 0; font-family: var(--serif); font-size: 1.15rem; font-style: italic; color: var(--ink-2); line-height: 1.65; background: var(--amber-l); border-radius: 0 8px 8px 0; }
+
+.callout { background: var(--paper-2); border: 1px solid var(--border-2); border-radius: 10px; padding: 1.1rem 1.3rem; margin: 1.8rem 0; font-family: var(--sans); font-size: .9rem; line-height: 1.65; color: var(--ink-2); }
+.callout-label { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: .45rem; }
+
+.warn-box { background: var(--red-l); border: 1px solid rgba(154,40,40,.25); border-radius: 10px; padding: 1rem 1.3rem; margin: 1.8rem 0; font-family: var(--sans); font-size: .88rem; line-height: 1.65; color: #5A1818; }
+.warn-label { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--red); margin-bottom: .4rem; }
+
+.code-block { background: #1A1A17; color: #E8E4D8; font-family: var(--mono); font-size: .75rem; line-height: 1.7; border-radius: 10px; padding: 1.1rem 1.3rem; margin: 1.4rem 0; overflow-x: auto; }
+.code-block .kw { color: #89BFFF; }
+.code-block .ty { color: #BD93F9; }
+.code-block .cm { color: #6A8A6A; font-style: italic; }
+.code-block .fn { color: #FFB86C; }
+
+.figure { margin: 2.2rem 0; }
+.figure-inner { background: var(--paper-2); border: 1px solid var(--border-2); border-radius: 12px; padding: 1.4rem; overflow-x: auto; }
+.figure-caption { font-family: var(--sans); font-size: .78rem; color: var(--ink-3); margin-top: .55rem; text-align: center; font-style: italic; }
+
+.ecosystem-card { border: 1px solid var(--border-2); border-radius: 12px; overflow: hidden; margin: 1.5rem 0; }
+.ec-header { display: flex; align-items: center; gap: 10px; padding: .85rem 1.2rem; border-bottom: 1px solid var(--border); background: var(--paper-2); }
+.ec-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ec-name { font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--ink); }
+.ec-tag { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; margin-left: auto; white-space: nowrap; }
+.ec-body { padding: 1rem 1.2rem; font-family: var(--sans); font-size: .88rem; color: var(--ink-2); line-height: 1.68; }
+.ec-body p { font-family: var(--sans); font-size: .88rem; margin-bottom: .75rem; }
+.ec-props { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px,1fr)); gap: .5rem; margin-top: .9rem; }
+.ec-prop { background: var(--paper-3); border-radius: 6px; padding: .5rem .7rem; }
+.prop-val { font-family: var(--mono); font-size: .78rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.prop-label { font-family: var(--sans); font-size: .7rem; color: var(--ink-3); }
+
+.compare-table { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: .82rem; margin: 1.5rem 0; }
+.compare-table th { background: var(--paper-3); font-weight: 600; color: var(--ink-2); padding: .55rem .75rem; text-align: left; border-bottom: 1px solid var(--border-2); font-size: .78rem; letter-spacing: .02em; }
+.compare-table td { padding: .55rem .75rem; border-bottom: 1px solid var(--border); color: var(--ink-2); vertical-align: top; line-height: 1.5; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: var(--paper-2); }
+.td-good { color: var(--teal); font-weight: 500; }
+.td-warn { color: var(--amber); font-weight: 500; }
+.td-bad { color: var(--red); font-weight: 500; }
+
+.fab-section { background: var(--paper-2); border: 1px solid var(--border-2); border-left: 4px solid var(--teal); border-radius: 0 12px 12px 0; padding: 1.3rem 1.4rem; margin: 2rem 0; }
+.fab-label { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin-bottom: .6rem; }
+
+.kiro-block { background: #180E08; border: 1px solid #5A2510; border-radius: 12px; padding: 1.6rem; margin: 2rem 0; color: #F0C4B0; }
+.kiro-eyebrow { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: #C06040; margin-bottom: .7rem; display: flex; align-items: center; gap: .5rem; }
+.kiro-dot { width: 6px; height: 6px; border-radius: 50%; background: #E04A3A; animation: kpulse 2s ease-in-out infinite; flex-shrink: 0; }
+@keyframes kpulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.kiro-block h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; color: #FAE8E0; text-transform: none; letter-spacing: 0; margin: 0 0 .7rem; }
+.kiro-block p { font-family: var(--sans); font-size: .88rem; line-height: 1.7; color: #D8B0A0; margin-bottom: .7rem; }
+
+.stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: .7rem; margin: 1.5rem 0; }
+.stat-card { background: var(--paper-2); border: 1px solid var(--border-2); border-radius: 8px; padding: .85rem 1rem; text-align: center; }
+.stat-val { font-family: var(--serif); font-size: 1.7rem; font-weight: 600; line-height: 1.1; margin-bottom: .2rem; }
+.stat-label { font-family: var(--sans); font-size: .75rem; color: var(--ink-3); line-height: 1.4; }
+
+.principle-block { background: var(--paper-3); border-radius: 14px; padding: 1.8rem 2rem; margin: 3.5rem 0; text-align: center; }
+.principle-block p { font-family: var(--serif); font-size: 1.15rem; font-style: italic; color: var(--ink-2); line-height: 1.8; margin: 0; }
+.principle-block em { font-style: normal; font-weight: 600; color: var(--amber); }
+
+.nav-strip { display: flex; justify-content: space-between; align-items: center; margin: 3rem 0 1rem; padding: 1rem 1.2rem; background: var(--paper-2); border-radius: 10px; border: 1px solid var(--border); font-family: var(--sans); font-size: .85rem; }
+.nav-strip a { color: var(--blue); text-decoration: none; font-weight: 500; }
+.nav-strip a:hover { text-decoration: underline; }
+.nav-strip .nav-label { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: 2px; }
+
+.refs { margin-top: 4.5rem; padding-top: 2rem; border-top: 1px solid var(--border-2); font-family: var(--sans); font-size: .78rem; color: var(--ink-3); line-height: 1.6; }
+.refs h3 { font-size: .75rem; margin-bottom: .9rem; }
+.refs ol { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.refs li { padding-left: 1.6rem; position: relative; }
+.refs li::before { content: '[' attr(data-n) ']'; position: absolute; left: 0; color: var(--amber); font-family: var(--mono); font-size: .62rem; }
+
+@media(max-width:600px) {
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .compare-table { font-size: .75rem; }
+  .ec-props { grid-template-columns: 1fr 1fr; }
+  .nav-strip { flex-direction: column; gap: .8rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <span>
+    <span class="nav-book">AI Systems Field Guide · 2026</span>
+    &nbsp;·&nbsp;
+    <span class="nav-ch">Chapter 6</span>
+  </span>
+  <div class="nav-links">
+    <a href="#openclaw">OpenClaw</a>
+    <a href="#nemoclaw">NemoClaw</a>
+    <a href="#zeroclaw">ZeroClaw</a>
+    <a href="#fab">Fab floor</a>
+    <a href="#playbook">Playbook</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="ch-badge">Chapter 6 · The ecosystem in 2026</div>
+  <h1>The trust ecosystem:<br><em>NemoClaw, ZeroClaw,</em><br>and the age of secure agents</h1>
+  <p class="hero-sub">OpenClaw went from a weekend project to 247,000 GitHub stars in 90 days — and exposed every unsolved problem in agentic security simultaneously. What happened next tells you everything about where the industry is going.</p>
+  <div class="meta">
+    <span>March 2026</span>
+    <span>~22 min read</span>
+    <span>Technical depth · Business context</span>
+    <span><a href="index.html">← Back to field guide</a></span>
+  </div>
+</div>
+
+<div class="article-body">
+
+<!-- ══ PART 1: OPENCLAW STORY ══ -->
+<h2 id="openclaw">The agent that changed everything — and exposed everything</h2>
+
+<p>To understand NemoClaw and ZeroClaw, you first need to understand the thing they are responding to. In November 2025, an Austrian software developer named Peter Steinberger pushed a weekend project to GitHub. He called it Clawdbot. You could text it on WhatsApp or Telegram and it would actually do things: manage your calendar, triage your inbox, run scripts, book restaurants, control your smart home. It was not a chatbot. It was an agent.</p>
+
+<p>Previous agent projects — AutoGPT in 2023, BabyAGI, dozens of others — had the same premise but failed in production. They got stuck in loops, hallucinated, burned through API credits, and required constant babysitting. What Steinberger did differently was wire together tool access, sandboxed code execution, persistent memory, cron-based scheduling, and messaging platform integration at exactly the moment the underlying models could execute reliably on multi-step plans. The combination produced something that felt qualitatively different from anything before it.</p>
+
+<div class="stat-row">
+  <div class="stat-card"><div class="stat-val" style="color:var(--amber)">247K</div><div class="stat-label">GitHub stars by March 2, 2026 — 47,700 forks</div></div>
+  <div class="stat-card"><div class="stat-val" style="color:var(--teal)">60 days</div><div class="stat-label">From obscure side project to fastest-growing open source repo in history</div></div>
+  <div class="stat-card"><div class="stat-val" style="color:var(--red)">512</div><div class="stat-label">Security vulnerabilities found in a single audit — 8 critical</div></div>
+</div>
+
+<p>The naming journey is worth noting for the chapter on trust: the project went from Clawdbot (November 2025) to Moltbot (January 27, 2026, after Anthropic sent trademark complaints over the "Clawd" reference) to OpenClaw (January 30, 2026, three days later, after "Moltbot never quite rolled off the tongue").<sup class="ref">[1]</sup> Three names in five days. Each rename accelerated public attention rather than dampening it.</p>
+
+<div class="pullquote">"OpenClaw requires root-level access to your system by design. It needs your email credentials, API keys, calendar tokens, browser cookies, filesystem access, and terminal permissions." — O'Reilly Radar, March 2026</div>
+
+<p>By mid-February 2026, Steinberger had joined OpenAI in an acqui-hire, and OpenClaw moved to an independent open-source foundation with OpenAI as financial sponsor.<sup class="ref">[2]</sup> Sam Altman described Steinberger as "a genius with a lot of amazing ideas about the future of very smart agents interacting with each other." The code stayed open source and model-agnostic — Claude, GPT, DeepSeek, and local models via Ollama all work with it.</p>
+
+<div class="warn-box">
+  <div class="warn-label">Security reality check</div>
+  <p style="margin:0;font-family:var(--sans);font-size:.88rem;line-height:1.65">A security audit in January 2026 found 512 vulnerabilities, 8 critical. CVE-2026-25253 enables one-click remote code execution. CVE-2026-26327 allows authentication bypass on exposed instances. 42,000+ OpenClaw instances have been found publicly exposed on the internet. 41.7% of skills on ClawHub contain vulnerabilities — including 336 outright malicious ones in the first 3,000 uploads (10.8% infection rate).<sup class="ref">[3]</sup> One of OpenClaw's own maintainers warned: "If you can't understand how to run a command line, this is far too dangerous of a project for you to use safely." This is not a project to deploy in enterprise settings without significant hardening. It is, however, the clearest demonstration yet of what agentic capability looks like when the security layer is absent.</p>
+</div>
+
+<p>The OpenClaw story is the Kiro incident writ large — but at consumer scale, in public, over 90 days instead of one catastrophic evening. Capability deployed without trust architecture. The market responded not by abandoning agents, but by immediately building the trust infrastructure that OpenClaw lacked. That response is NemoClaw and ZeroClaw.</p>
+
+<!-- ══ PART 2: NEMOCLAW ══ -->
+<div class="section-break" id="nemoclaw">GTC 2026 · March 16, San Jose</div>
+
+<h2>NemoClaw: Nvidia's guardrails layer — <em>built for OpenClaw, works for any agent</em></h2>
+
+<p>Today at GTC 2026, Jensen Huang delivered one of the most-quoted lines of his keynote: <em>"Mac and Windows are the operating systems for the personal computer. OpenClaw is the operating system for personal AI. This is the moment the industry has been waiting for — the beginning of a new renaissance in software."</em><sup class="ref">[4]</sup></p>
+
+<p>The quote is about OpenClaw — not NemoClaw. That distinction matters. NemoClaw is Nvidia's guardrails and governance stack, built with OpenClaw as its primary target — but designed to work with any agentic system. It supports agents running other providers' models too: OpenAI, Anthropic, and local models via Ollama all work within it.<sup class="ref">[4]</sup> It adds what OpenClaw fundamentally lacked: a sandboxed runtime (OpenShell), behavioral guardrails configurable via YAML, local inference models (Nemotron), and a Privacy Router that prevents sensitive data from reaching cloud LLMs — all installable in a single command.</p>
+
+<p>The strategic context matters here too. OpenAI's February 2026 acquisition of OpenClaw's creator sent a signal to the enterprise community: companies that had built on OpenClaw suddenly faced vendor lock-in concerns. Nvidia saw the opening and moved quickly — positioning NemoClaw as the open, hardware-agnostic governance layer that works regardless of which agent framework or LLM provider you use. Jensen Huang described this as providing <em>"the policy engine of all the SaaS companies in the world."</em><sup class="ref">[4]</sup></p>
+
+<div class="ecosystem-card">
+  <div class="ec-header">
+    <div class="ec-dot" style="background:#76B900"></div>
+    <div class="ec-name">NemoClaw — Nvidia</div>
+    <span class="ec-tag" style="background:#F0F8E8;color:#4A7800">Announced GTC 2026 · March 16</span>
+  </div>
+  <div class="ec-body">
+    <p><strong>Primary focus: OpenClaw. Works for any agentic system.</strong> NemoClaw installs Nvidia Nemotron models and the OpenShell runtime in a single command. It is optimized for OpenClaw but supports agents using models from OpenAI, Anthropic, and any Ollama-compatible local model. NemoClaw does not replace your agent framework — it adds the trust envelope around it.</p>
+    <p><strong>OpenShell — sandboxed execution with YAML guardrails.</strong> The structural core. Runs agents in an isolated sandbox that prevents access to files not necessary for the task and limits network access. Developers define behavioral rules in YAML configuration — some of which are hot-swappable without restarting the agent. This is the missing architectural layer from original OpenClaw: the explicit, enforceable boundary between what the agent can see and what it can affect.</p>
+    <p><strong>Privacy Router — sensitive data never reaches cloud LLMs.</strong> Routes prompts containing sensitive data to local Nemotron models rather than cloud endpoints. For enterprises in regulated industries — healthcare, finance, legal, semiconductor IP — this is not a nice-to-have. It is a compliance requirement.</p>
+    <p><strong>Nemotron models — more than half a dozen.</strong> Covers text generation, graph analysis, and reasoning tasks. Running locally on RTX PCs, DGX Spark, or DGX Station — no cloud round-trip, no data residency risk.</p>
+    <p><strong>Enterprise governance.</strong> RBAC (role-based access control), audit logs, and data residency controls baked in. Hardware-agnostic — runs on Nvidia, AMD, or cloud instances. Open source as part of the Nvidia Agent Toolkit.</p>
+    <div class="ec-props">
+      <div class="ec-prop"><div class="prop-val">Any agent</div><div class="prop-label">OpenClaw, OpenAI, Anthropic, Ollama</div></div>
+      <div class="ec-prop"><div class="prop-val">OpenShell</div><div class="prop-label">YAML guardrails, hot-swappable rules</div></div>
+      <div class="ec-prop"><div class="prop-val">Privacy Router</div><div class="prop-label">Sensitive data stays local</div></div>
+      <div class="ec-prop"><div class="prop-val">6+ Nemotron models</div><div class="prop-label">Text, graph, reasoning — local</div></div>
+      <div class="ec-prop"><div class="prop-val">RBAC + audit logs</div><div class="prop-label">Enterprise governance built in</div></div>
+      <div class="ec-prop"><div class="prop-val">RTX PC · DGX · AMD · Cloud</div><div class="prop-label">Hardware-agnostic deployment</div></div>
+    </div>
+    <p style="font-size:.75rem;color:var(--ink-3);margin-top:.5rem;margin-bottom:0">Partners reported: Salesforce, Cisco, Google, Adobe, CrowdStrike — none has publicly confirmed a deal as of March 16, 2026.</p>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="callout-label">The precise framing for your AI strategy</div>
+  NemoClaw is the guardrails and governance layer for agentic systems — optimized for OpenClaw but not limited to it. If you are running OpenClaw, NemoClaw is the trust envelope you add. If you are running a different agent framework with OpenAI or Anthropic models, NemoClaw's OpenShell sandbox, Privacy Router, and YAML behavioral rules still apply. If you are building agent infrastructure from scratch, the components NemoClaw packages — sandboxed execution, local inference, policy-based guardrails, audit trails — are the design targets regardless of which runtime you choose. The trust principles are universal. The implementation is Nvidia's.
+</div>
+
+<p>Peter Steinberger, OpenClaw's creator, said at GTC: <em>"With Nvidia and the broader ecosystem, we're building the claws and guardrails that let anyone create powerful, secure AI assistants."</em><sup class="ref">[4]</sup> The phrasing is telling — guardrails as an addition to capability, not a replacement for it. This is the correct framing. You do not solve agentic security by removing agent capability. You solve it by making the boundary between capability and environment explicit, enforceable, and auditable.</p>
+
+<!-- ══ PART 3: ZEROCLAW ══ -->
+<div class="section-break" id="zeroclaw">The Rust alternative</div>
+
+<h2>ZeroClaw: when the trust layer is <em>the runtime itself</em></h2>
+
+<p>ZeroClaw appeared on GitHub in mid-February 2026 — and attracted 3,400 stars in its first two days.<sup class="ref">[5]</sup> It is not OpenClaw rewritten in Rust. It is a different answer to the question of what agent infrastructure should be — one that treats security not as a layer added on top, but as an emergent property of the language and architecture choices made at the foundation.</p>
+
+<p>The core insight: Rust's ownership system eliminates buffer overflows, use-after-free vulnerabilities, and data races at compile time. These are not edge cases — they are the vulnerability classes responsible for CVE-2026-25253 (one-click RCE in OpenClaw) and CVE-2026-26327 (authentication bypass). Rust makes those CVEs structurally impossible to write, not harder to find after the fact.</p>
+
+<div class="ecosystem-card">
+  <div class="ec-header">
+    <div class="ec-dot" style="background:#D56A00"></div>
+    <div class="ec-name">ZeroClaw</div>
+    <span class="ec-tag" style="background:#FEF3DC;color:#7A4A05">Rust · Open source · Apache 2.0</span>
+  </div>
+  <div class="ec-body">
+    <p><strong>Security by architecture.</strong> Gateway pairing with device codes, deny-by-default channel allowlists, filesystem sandboxing with workspace scoping, rate limiting, encrypted credential storage. These are not configuration options — they are structural defaults. An agent cannot exceed its declared scope because the type system enforces the boundary.</p>
+    <p><strong>Footprint.</strong> A single Rust binary. No Node.js runtime, no Python interpreter, no heavyweight dependency chain. Runs comfortably on a $10 Raspberry Pi. Suitable for edge devices, embedded systems, CI pipelines, and any environment where adding 390MB of Node.js overhead is unacceptable.</p>
+    <p><strong>Trait-based architecture.</strong> Every subsystem — provider, channel, tool, memory, tunnel — is a Rust trait. Extending ZeroClaw means implementing an interface and compiling a new binary. There is no plugin marketplace (ClawHub's 10.8% malicious upload rate explains why this is a feature, not a limitation).</p>
+    <p><strong>Maturity caveat — important.</strong> ZeroClaw is currently at v0.1.6, pre-1.0. An independent migration analysis found 261 .unwrap() calls across 80 files (potential panic risk in production), std::sync::Mutex in async contexts across 6 modules (potential deadlocks), and only 3 integration tests.<sup class="ref">[6]</sup> Releases ship every 1-2 days. This is a rapidly evolving project, not a stable production runtime yet. Evaluate accordingly.</p>
+    <div class="ec-props">
+      <div class="ec-prop"><div class="prop-val">&lt;5 MB RAM</div><div class="prop-label">Idle footprint (release build)</div></div>
+      <div class="ec-prop"><div class="prop-val">&lt;10 ms</div><div class="prop-label">Cold start time</div></div>
+      <div class="ec-prop"><div class="prop-val">8.8 MB</div><div class="prop-label">Single binary size</div></div>
+      <div class="ec-prop"><div class="prop-val">22+ providers</div><div class="prop-label">LLM provider support</div></div>
+      <div class="ec-prop"><div class="prop-val">v0.1.6</div><div class="prop-label">Pre-1.0 — evaluate maturity</div></div>
+      <div class="ec-prop"><div class="prop-val">18K+ stars</div><div class="prop-label">GitHub by early March 2026</div></div>
+    </div>
+  </div>
+</div>
+
+<h3>The Rust trait architecture</h3>
+<p>The architectural difference between ZeroClaw and plugin-based systems like OpenClaw is best understood through the trait interface. Every integration in ZeroClaw must satisfy this contract at compile time:</p>
+
+<div class="code-block"><span class="cm">// Every channel integration is type-safe and verified at compile time</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ty">Channel</span>: <span class="ty">Send</span> + <span class="ty">Sync</span> + <span class="ty">'static</span> {
+    <span class="kw">fn</span> <span class="fn">name</span>(&amp;<span class="kw">self</span>) -&gt; &amp;<span class="ty">str</span>;
+    <span class="kw">async fn</span> <span class="fn">connect</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>) -&gt; <span class="ty">Result</span>&lt;()&gt;;
+    <span class="kw">async fn</span> <span class="fn">receive</span>(&amp;<span class="kw">self</span>) -&gt; <span class="ty">Result</span>&lt;<span class="ty">Message</span>&gt;;
+    <span class="kw">async fn</span> <span class="fn">send</span>(&amp;<span class="kw">self</span>, msg: <span class="ty">Response</span>) -&gt; <span class="ty">Result</span>&lt;()&gt;;
+    <span class="kw">async fn</span> <span class="fn">disconnect</span>(&amp;<span class="kw">self</span>) -&gt; <span class="ty">Result</span>&lt;()&gt;;
+}
+
+<span class="cm">// The compiler guarantees:
+// - Type safety: wrong argument types fail at compile time, not at 3am in prod
+// - Thread safety: Send + Sync enforced — no data races possible
+// - Completeness: missing method = compile error, not a runtime panic
+// - Contrast with OpenClaw: a ClawHub skill is downloaded JavaScript
+//   executing inside your process with your permissions. No contract.
+//   No sandbox. No compile-time verification.</span>}</div>
+
+<h3>Runtime comparison</h3>
+<table class="compare-table">
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>OpenClaw</th>
+      <th>ZeroClaw (Rust)</th>
+      <th>NemoClaw (Nvidia)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Runtime</td>
+      <td class="td-bad">Node.js (~390MB overhead)</td>
+      <td class="td-good">Rust static binary</td>
+      <td>Platform SDK (OpenShell + Privacy Router + Nemotron)</td>
+    </tr>
+    <tr>
+      <td>RAM idle</td>
+      <td class="td-bad">~450 MB</td>
+      <td class="td-good">&lt;5 MB</td>
+      <td>Platform-managed</td>
+    </tr>
+    <tr>
+      <td>Cold start</td>
+      <td class="td-warn">2–5 sec</td>
+      <td class="td-good">&lt;10 ms</td>
+      <td>Platform-managed</td>
+    </tr>
+    <tr>
+      <td>Security model</td>
+      <td class="td-bad">Plugin model (CVE-2026-25253, CVE-2026-26327)</td>
+      <td class="td-good">Compile-time enforcement via Rust ownership</td>
+      <td class="td-good">OpenShell sandbox + policy controls</td>
+    </tr>
+    <tr>
+      <td>Extensibility</td>
+      <td>ClawHub marketplace (10.8% malicious uploads)</td>
+      <td>Rust traits — compile + binary</td>
+      <td>Nvidia Agent Toolkit ecosystem</td>
+    </tr>
+    <tr>
+      <td>Maturity</td>
+      <td>300K+ stars, active community</td>
+      <td class="td-warn">v0.1.6 pre-1.0 — evaluate carefully</td>
+      <td>Announced today — production readiness TBD</td>
+    </tr>
+    <tr>
+      <td>Best for</td>
+      <td>Personal use, developer experimentation</td>
+      <td class="td-good">Edge, air-gapped, embedded, CI/CD</td>
+      <td class="td-good">Any agent framework (OpenClaw, OpenAI, Anthropic, Ollama) needing enterprise guardrails, on-premises inference, Privacy Router</td>
+    </tr>
+    <tr>
+      <td>Hardware req.</td>
+      <td>Any (but Node.js)</td>
+      <td class="td-good">ARM, x86, RISC-V — including $10 boards</td>
+      <td>Any (hardware-agnostic by design)</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <div class="callout-label">NemoClaw + ZeroClaw — complementary, not competing</div>
+  NemoClaw secures OpenClaw deployments for enterprise environments — managed, integrated with existing enterprise toolchains, backed by Nvidia's ecosystem. ZeroClaw is for teams that need to own their agent runtime completely — edge, air-gapped, strict data residency, embedded systems. A mature AI organization building real infrastructure will likely use both: NemoClaw for enterprise workflow agents running on company systems, ZeroClaw-pattern runtimes for agents embedded in infrastructure, devices, or environments where cloud round-trips are impossible and footprint is constrained.
+</div>
+
+<!-- ══ PART 4: SEMICONDUCTOR FAB ══ -->
+<div class="section-break" id="fab">Real-world deployment · Semiconductor manufacturing</div>
+
+<h2>The factory floor: <em>all five anchors at once</em></h2>
+
+<p>A semiconductor fabrication facility is where abstract AI architecture principles become concrete engineering requirements in the most unforgiving environment imaginable. A modern fab running DRAM at advanced nodes performs approximately 1,500 process steps per wafer. Each step is a tightly controlled physical or chemical transformation happening inside chambers where temperature variance of a single degree Celsius, pressure drift of a few millitorr, or precursor gas flow deviation of a few sccm can render an entire lot of wafers — worth hundreds of thousands of dollars — defective. The process control problem is not metaphorical. It is engineering at its most exacting.</p>
+
+<div class="fab-section">
+  <div class="fab-label">Case study · Micron Technology</div>
+  <p style="font-family:var(--sans);font-size:.9rem;color:var(--ink-2);line-height:1.7;margin-bottom:.5rem">Koen De Backer, Micron's Corporate Vice President of Smart Manufacturing &amp; Artificial Intelligence, describes the result of deploying AI across their manufacturing stack: <em>"We can now launch products twice as fast — while saving 1 million work hours annually. It's truly transformative. You could say it's a killer app."</em><sup class="ref">[7]</sup></p>
+  <p style="font-family:var(--sans);font-size:.9rem;color:var(--ink-2);line-height:1.7;margin:0">The scale behind that outcome: 590,000 sensors producing 100 million wafer images across 436 million control points, all run through AI models each week. 77 petabytes of data stored. 58 terabytes of new data captured every day.<sup class="ref">[7]</sup> This is exactly the kind of system where KG-aware chunking, tiered memory, and intelligent indexing (Anchor 01) are not optional refinements — they are hard engineering requirements.</p>
+</div>
+
+<h3>CVD and ALD: where reactive models are non-negotiable</h3>
+<p>Chemical Vapor Deposition (CVD) and Atomic Layer Deposition (ALD) are fundamental deposition techniques — ALD enabling atomic-level control over film thickness, critical at sub-5nm nodes. The control loop is tight: precursor gas flows, chamber pressure, RF power, and substrate temperature must be held within narrow tolerances simultaneously, across hundreds of chambers running in parallel. A drift that goes undetected for even a few wafers propagates defects through downstream steps — lithography, etch, CMP — each of which amplifies the original deviation.<sup class="ref">[8]</sup></p>
+
+<p>This is Anchor 02 (reactive world model) at its most literal: a model of chamber state that must update faster than the process can drift. ASM International's XP8E platform integrates multiple critical process steps into a single cluster with embedded AI and machine learning for real-time control in high-volume manufacturing — a direct hardware implementation of the reactive world model principle.<sup class="ref">[9]</sup></p>
+
+<h3>The digital twin stack: three layers</h3>
+<p>The SEMI Digital Twins workshop articulated the target architecture as three layers of virtual models — process-level, tool-level, and the entire fab — all working together.<sup class="ref">[10]</sup> Each layer maps to a different anchor:</p>
+
+<div class="figure">
+  <div class="figure-inner">
+    <svg width="100%" viewBox="0 0 680 310" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- Fab level -->
+      <g class="c-amber">
+        <rect x="30" y="20" width="620" height="270" rx="14" stroke-width="0.5"/>
+        <text class="th" x="50" y="46" dominant-baseline="central">Fab-level digital twin</text>
+        <text class="ts" x="50" y="64" dominant-baseline="central">Anchor 04 · workflow intelligence · AMHS scheduling · yield optimization</text>
+      </g>
+
+      <!-- Tool level -->
+      <g class="c-teal">
+        <rect x="55" y="85" width="570" height="115" rx="10" stroke-width="0.5"/>
+        <text class="th" x="75" y="108" dominant-baseline="central">Tool-level digital twin</text>
+        <text class="ts" x="75" y="126" dominant-baseline="central">Anchor 02 · reactive world model · synchronized virtual tool counterparts</text>
+      </g>
+
+      <!-- Individual tool boxes -->
+      <g class="c-teal">
+        <rect x="75" y="140" width="90" height="44" rx="6" stroke-width="0.5"/>
+        <text class="th" x="120" y="160" text-anchor="middle" dominant-baseline="central">CVD</text>
+        <text class="ts" x="120" y="176" text-anchor="middle" dominant-baseline="central">chamber</text>
+      </g>
+      <g class="c-teal">
+        <rect x="178" y="140" width="90" height="44" rx="6" stroke-width="0.5"/>
+        <text class="th" x="223" y="160" text-anchor="middle" dominant-baseline="central">ALD</text>
+        <text class="ts" x="223" y="176" text-anchor="middle" dominant-baseline="central">deposition</text>
+      </g>
+      <g class="c-teal">
+        <rect x="281" y="140" width="90" height="44" rx="6" stroke-width="0.5"/>
+        <text class="th" x="326" y="160" text-anchor="middle" dominant-baseline="central">Etch</text>
+        <text class="ts" x="326" y="176" text-anchor="middle" dominant-baseline="central">plasma</text>
+      </g>
+      <g class="c-teal">
+        <rect x="384" y="140" width="90" height="44" rx="6" stroke-width="0.5"/>
+        <text class="th" x="429" y="160" text-anchor="middle" dominant-baseline="central">CMP</text>
+        <text class="ts" x="429" y="176" text-anchor="middle" dominant-baseline="central">polish</text>
+      </g>
+      <g class="c-teal">
+        <rect x="487" y="140" width="118" height="44" rx="6" stroke-width="0.5"/>
+        <text class="th" x="546" y="160" text-anchor="middle" dominant-baseline="central">Lithography</text>
+        <text class="ts" x="546" y="176" text-anchor="middle" dominant-baseline="central">scanner</text>
+      </g>
+
+      <!-- Process level -->
+      <g class="c-purple">
+        <rect x="55" y="215" width="570" height="60" rx="10" stroke-width="0.5"/>
+        <text class="th" x="75" y="238" dominant-baseline="central">Process-level digital twin</text>
+        <text class="ts" x="75" y="258" dominant-baseline="central">Anchor 03 · grounded world model · inline metrology calibration · drift detection</text>
+      </g>
+
+      <!-- Vertical arrows -->
+      <line x1="340" y1="80" x2="340" y2="86" stroke="#B8720A" stroke-width="1" marker-end="url(#arrow)"/>
+      <line x1="340" y1="200" x2="340" y2="214" stroke="#4A42AA" stroke-width="1" marker-end="url(#arrow)"/>
+    </svg>
+  </div>
+  <div class="figure-caption">Figure 6.1 — The semiconductor fab digital twin stack. Three layers map directly to three anchors: process-level (grounded world model), tool-level (reactive world model), fab-level (workflow intelligence). Real-time data flows upward; control signals flow downward.</div>
+</div>
+
+<p><strong>Process-level (Anchor 03 — grounded world model):</strong> A virtual representation of the CVD/ALD/etch process flow, continuously calibrated against inline metrology data. Lam Research's Fabtex Yield Optimizer uses machine learning and virtual silicon digital twins with inline fab data to reduce process variability — applying AI to recommend metrology target changes for yield improvement, saving multiple weeks to achieve targeted yields.<sup class="ref">[11]</sup></p>
+
+<p><strong>Tool-level (Anchor 02 — reactive world model):</strong> Every process tool — scanner, etcher, CVD/ALD tool, CMP, ion implantation, wafer cleaning — must exist as a synchronized virtual counterpart.<sup class="ref">[10]</sup> Each generates a continuous sensor stream; the twin must update in near-real-time or its predictions lag behind physical reality.</p>
+
+<p><strong>Fab-level (Anchor 04 — workflow intelligence):</strong> TSMC uses AI-powered digital twins to transform 2D CAD designs into interactive 3D fab layouts, using Nvidia cuOpt for optimization — enabling planning teams to proactively identify equipment collisions and assess space and operational KPIs. AI-powered AMHS (Automated Material Handling System) asset utilization improvements of 30% have been demonstrated.<sup class="ref">[12]</sup></p>
+
+<h3>The Micron New York megafab — scale at which all five anchors are mandatory</h3>
+
+<p>Micron's New York megafab broke ground on January 16, 2026, in Clay, New York — the largest private investment in New York state history. The project is planned for up to four fab phases completing by 2041, with volume production ramping toward 2045. It is a cornerstone of Micron's goal to produce 40% of its own global DRAM output in the United States — up from virtually zero today.<sup class="ref">[13]</sup></p>
+
+<p>Jensen Huang spoke at the groundbreaking ceremony: <em>"As AI transforms every industry, advanced memory has become essential. By bringing manufacturing to the U.S., Micron is strengthening America's AI infrastructure and supply chain resilience to power the next wave of AI breakthroughs."</em><sup class="ref">[14]</sup> That quote, delivered in January 2026, lands differently after today's GTC announcement: Nvidia's CEO endorsing Micron's fab at the same moment Nvidia announces the agent platform that will run on the memory that fab eventually produces. The supply chain dependency loop is explicit.</p>
+
+<div class="callout">
+  <div class="callout-label">Important timeline note</div>
+  Fab 1 construction starts Q2 2026 and begins operating as late as Q3 2030. Full build-out completes by 2041. The groundbreaking is a construction and investment milestone, not a production milestone. Independent analysts note that status quo memory supply conditions persist until at least 2030. For practitioners: the technology decisions being made today for fab AI systems will govern production environments a decade from now. Architecture choices made now are load-bearing for a generation.
+</div>
+
+<h3>Where NemoClaw and ZeroClaw fit on the fab floor</h3>
+
+<p>The semiconductor fab floor splits into two deployment zones that map precisely to the NemoClaw/ZeroClaw split — and this mapping holds for any large industrial environment:</p>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Zone</th><th>Examples</th><th>Requirements</th><th>Runtime choice</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Enterprise zone</strong></td>
+      <td>MES, yield management, scheduling, supply chain, digital twin orchestration</td>
+      <td>Audit trails, enterprise integration, SLAs, human approval workflows</td>
+      <td class="td-good">NemoClaw — managed, auditable, enterprise ecosystem</td>
+    </tr>
+    <tr>
+      <td><strong>Edge / real-time zone</strong></td>
+      <td>Chamber pressure control, inline metrology, AMHS robot coordination, HVAC, gas flow regulation</td>
+      <td>&lt;10ms latency, no cloud round-trip, minimal footprint, compile-time safety guarantees, air-gapped operation</td>
+      <td class="td-good">ZeroClaw-pattern Rust runtimes — on PLCs and embedded controllers</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>HVAC alone accounts for 40-60% of total energy consumption in semiconductor fabs — and cleanroom HVAC is process control, not comfort conditioning. Temperature uniformity within fractions of a degree, humidity within narrow bounds, particulate counts in parts per cubic meter. This is precisely where ZeroClaw's sub-10ms cold start and Fluent Bit's million-events-per-second ingestion become relevant at the infrastructure level — not just in software agents, but in the physical control systems governing the environment the wafers inhabit.</p>
+
+<p>The fab floor is the most unambiguous argument for why both platforms exist and why neither is sufficient alone. Miss either layer and the architecture is incomplete.</p>
+
+<!-- ══ PART 5: PLAYBOOK ══ -->
+<div class="section-break" id="playbook">Practitioner guidance</div>
+
+<h2>The decision playbook: <em>which runtime for which problem</em></h2>
+
+<p>The OpenClaw/NemoClaw/ZeroClaw landscape as of March 2026 can be summarized as a single design principle: choose your trust model first, then choose your runtime. The runtime choice is downstream of the trust model, not the other way around.</p>
+
+<div class="callout">
+  <div class="callout-label">Decision framework</div>
+  <p style="font-family:var(--sans);font-size:.88rem;color:var(--ink-2);line-height:1.65;margin-bottom:.5rem"><strong>Use OpenClaw if:</strong> You are a developer experimenting with agent capabilities, building prototypes, or running personal automation on hardware you control and have hardened. Do not use it in enterprise settings without NemoClaw or equivalent trust infrastructure.</p>
+  <p style="font-family:var(--sans);font-size:.88rem;color:var(--ink-2);line-height:1.65;margin-bottom:.5rem"><strong>Use NemoClaw if:</strong> You are deploying OpenClaw in an enterprise environment and need governance, privacy controls, and on-premises inference. Wait for production stability signals — announced today, enterprise readiness timeline TBD.</p>
+  <p style="font-family:var(--sans);font-size:.88rem;color:var(--ink-2);line-height:1.65;margin-bottom:.5rem"><strong>Use ZeroClaw-pattern Rust runtimes if:</strong> You need sub-10ms latency, minimal footprint, air-gapped operation, or compile-time security guarantees. Evaluate v0.1.6 maturity carefully before production deployment — the architecture is sound, the codebase is pre-1.0.</p>
+  <p style="font-family:var(--sans);font-size:.88rem;color:var(--ink-2);line-height:1.65;margin:0"><strong>Build your own if:</strong> Your domain has requirements that none of these address — specific certification requirements (IEC 61508 for functional safety, ISO 26262 for automotive), proprietary protocol integration, or latency budgets under 1ms. The trust principles from Anchor 05 still apply regardless of whether you use an existing runtime.</p>
+</div>
+
+<div class="principle-block">
+  <p>The OpenClaw story compressed years of open-source platform dynamics into 90 days: explosive adoption, security crisis, acquisition, ecosystem response. The lesson is not that agents are dangerous. It is that capability without a trust envelope creates liability faster than it creates value. NemoClaw and ZeroClaw are the trust envelope — one from the platform layer down, one from the runtime layer up. <em>The anchors are what you build on.</em></p>
+</div>
+
+<!-- CHAPTER NAV -->
+<div class="nav-strip">
+  <div>
+    <span class="nav-label">Previous chapter</span>
+    <a href="chapter-05-security.html">← Chapter 5: Security &amp; trust across every surface</a>
+  </div>
+  <div style="text-align:right">
+    <span class="nav-label">Next chapter</span>
+    <a href="chapter-07-voice-wispr.html">Chapter 7: Voice AI &amp; Wispr Flow →</a>
+  </div>
+</div>
+
+<!-- REFERENCES -->
+<div class="refs">
+  <h3>References</h3>
+  <ol>
+    <li data-n="1">OpenClaw Wikipedia — naming history: Clawdbot (Nov 2025) → Moltbot (Jan 27, 2026, after Anthropic trademark complaint) → OpenClaw (Jan 30, 2026). en.wikipedia.org/wiki/OpenClaw</li>
+    <li data-n="2">VentureBeat: "OpenAI's acquisition of OpenClaw signals the beginning of the end of the ChatGPT era." February 2026. Peter Steinberger joins OpenAI February 14-15, 2026; project moves to independent foundation.</li>
+    <li data-n="3">ZeroClaw Blog: "ZeroClaw vs OpenClaw vs PicoClaw — The Definitive 2026 Comparison." CVE-2026-25253 (one-click RCE), CVE-2026-26327 (auth bypass), 42K+ exposed instances, 41.7% ClawHub skill vulnerability rate. zeroclaws.io/blog</li>
+    <li data-n="4">Nvidia Globe Newswire press release: "NVIDIA Announces NemoClaw for the OpenClaw Community." March 16, 2026. Jensen Huang quote confirmed. globenewswire.com/news-release/2026/03/16/3256722</li>
+    <li data-n="5">Prism News: "ZeroClaw emerges as ultra-lightweight, Rust-native alternative to OpenClaw." Mid-February 2026 launch, 3,400 stars in first two days. prismnews.com</li>
+    <li data-n="6">GitHub Gist — ZeroClaw Migration Assessment (yanji84): v0.1.6, 261 .unwrap() calls, std::sync::Mutex in async contexts (6 modules), 3 integration tests. February 22, 2026. gist.github.com/yanji84</li>
+    <li data-n="7">Micron Technology: Koen De Backer, Corporate VP Smart Manufacturing &amp; AI. Official Micron case study on AI-enabled manufacturing. 590,000 sensors, 100M wafer images, 436M control points weekly, 77 PB stored, 58 TB/day captured.</li>
+    <li data-n="8">ASM International: XP8E platform — multi-process cluster with embedded AI/ML for real-time control in HVM. ALD for atomic-level film thickness control at sub-5nm nodes.</li>
+    <li data-n="9">SEMI Digital Twins Workshop: three-layer DT architecture — process-level, tool-level, fab-level. AMHS optimization 30% improvement cited.</li>
+    <li data-n="10">Lam Research: Fabtex Yield Optimizer — virtual silicon digital twins with inline fab data. ML-driven metrology target recommendations for yield improvement.</li>
+    <li data-n="11">TSMC / Nvidia Omniverse: AI-powered 3D fab layout digital twins, cuOpt for scheduling optimization. Demonstrated at GTC 2026.</li>
+    <li data-n="12">Micron New York megafab: Groundbreaking January 16, 2026, Clay, New York. Up to 4 fabs, completion by 2041, full production by 2045. Goal: 40% of Micron's own global DRAM output in US.</li>
+    <li data-n="13">Jensen Huang quote at Micron groundbreaking ceremony, January 16, 2026: "As AI transforms every industry, advanced memory has become essential..."</li>
+    <li data-n="14">Nvidia GTC 2026 live blog: NemoClaw on DGX Spark and DGX Station. nvidia.com/blog/gtc-2026-news — published March 16, 2026.</li>
+  </ol>
+</div>
+
+</div>
+
+<script>
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  bar.style.width = Math.min((h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100, 100) + '%';
+});
+</script>
+
+</body>
+</html>
